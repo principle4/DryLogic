@@ -1,0 +1,103 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Principle4.DryLogic", "Principle4.DryLogic\Principle4.DryLogic.csproj", "{C270C822-24CF-46A4-82FF-40443F931CE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Principle4.DryLogic.Tests", "Principle4.DryLogic.Tests\Principle4.DryLogic.Tests.csproj", "{26AEC5A8-7548-439D-B783-689423BD9F6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Principle4.DryLogic.Demos.WPF", "Principle4.DryLogic.Demos.WPF\Principle4.DryLogic.Demos.WPF.csproj", "{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Principle4.DryLogic.Demos.Web", "Principle4.DryLogic.Demos.Web\Principle4.DryLogic.Demos.Web.csproj", "{7671AC4F-6C6F-4FFB-80E8-368D3761770D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Principle4.DryLogic.MVC", "Principle4.DryLogic.MVC\Principle4.DryLogic.MVC.csproj", "{452F5736-00F6-4152-886A-DF83B885F253}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C270C822-24CF-46A4-82FF-40443F931CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C270C822-24CF-46A4-82FF-40443F931CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C270C822-24CF-46A4-82FF-40443F931CE4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C270C822-24CF-46A4-82FF-40443F931CE4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C270C822-24CF-46A4-82FF-40443F931CE4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C270C822-24CF-46A4-82FF-40443F931CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C270C822-24CF-46A4-82FF-40443F931CE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C270C822-24CF-46A4-82FF-40443F931CE4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C270C822-24CF-46A4-82FF-40443F931CE4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C270C822-24CF-46A4-82FF-40443F931CE4}.Release|x86.ActiveCfg = Release|Any CPU
+		{26AEC5A8-7548-439D-B783-689423BD9F6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26AEC5A8-7548-439D-B783-689423BD9F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26AEC5A8-7548-439D-B783-689423BD9F6E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{26AEC5A8-7548-439D-B783-689423BD9F6E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{26AEC5A8-7548-439D-B783-689423BD9F6E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26AEC5A8-7548-439D-B783-689423BD9F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26AEC5A8-7548-439D-B783-689423BD9F6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26AEC5A8-7548-439D-B783-689423BD9F6E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{26AEC5A8-7548-439D-B783-689423BD9F6E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{26AEC5A8-7548-439D-B783-689423BD9F6E}.Release|x86.ActiveCfg = Release|Any CPU
+		{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}.Debug|x86.ActiveCfg = Debug|x86
+		{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}.Debug|x86.Build.0 = Debug|x86
+		{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}.Release|Any CPU.ActiveCfg = Release|x86
+		{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}.Release|Mixed Platforms.Build.0 = Release|x86
+		{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}.Release|x86.ActiveCfg = Release|x86
+		{F2B805B0-383A-44DC-A0A4-AB7934E83A5B}.Release|x86.Build.0 = Release|x86
+		{7671AC4F-6C6F-4FFB-80E8-368D3761770D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7671AC4F-6C6F-4FFB-80E8-368D3761770D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7671AC4F-6C6F-4FFB-80E8-368D3761770D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7671AC4F-6C6F-4FFB-80E8-368D3761770D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7671AC4F-6C6F-4FFB-80E8-368D3761770D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7671AC4F-6C6F-4FFB-80E8-368D3761770D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7671AC4F-6C6F-4FFB-80E8-368D3761770D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7671AC4F-6C6F-4FFB-80E8-368D3761770D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7671AC4F-6C6F-4FFB-80E8-368D3761770D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7671AC4F-6C6F-4FFB-80E8-368D3761770D}.Release|x86.ActiveCfg = Release|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Debug|x86.Build.0 = Debug|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Release|x86.ActiveCfg = Release|Any CPU
+		{452F5736-00F6-4152-886A-DF83B885F253}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 6
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://godzillacoder.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Principle4.DryLogic.Tests\\Principle4.DryLogic.Tests.csproj
+		SccProjectName1 = Principle4.DryLogic.Tests
+		SccLocalPath1 = Principle4.DryLogic.Tests
+		SccProjectUniqueName2 = Principle4.DryLogic\\Principle4.DryLogic.csproj
+		SccProjectName2 = Principle4.DryLogic
+		SccLocalPath2 = Principle4.DryLogic
+		SccProjectUniqueName3 = Principle4.DryLogic.Demos.WPF\\Principle4.DryLogic.Demos.WPF.csproj
+		SccProjectName3 = Principle4.DryLogic.Demos.WPF
+		SccLocalPath3 = Principle4.DryLogic.Demos.WPF
+		SccProjectUniqueName4 = Principle4.DryLogic.Demos.Web\\Principle4.DryLogic.Demos.Web.csproj
+		SccProjectName4 = Principle4.DryLogic.Demos.Web
+		SccLocalPath4 = Principle4.DryLogic.Demos.Web
+		SccProjectUniqueName5 = Principle4.DryLogic.MVC\\Principle4.DryLogic.MVC.csproj
+		SccProjectName5 = Principle4.DryLogic.MVC
+		SccLocalPath5 = Principle4.DryLogic.MVC
+	EndGlobalSection
+EndGlobal

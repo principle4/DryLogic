@@ -1,0 +1,68 @@
+﻿@model Principle4.DryLogic.Demos.Web.Models.EmployeeViewModel
+@using Principle4.DryLogic
+
+@{
+  ViewBag.Title = "Create Employee";
+}
+
+<h2>Create Employee</h2>
+
+@using (Html.BeginForm())
+{
+  @Html.AntiForgeryToken()
+
+  <div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true)
+
+    @Html.LabelFor(model => model.MyEmployee.FirstName)
+    @Html.EditorFor(model => model.MyEmployee.FirstName)
+    @Html.ValidationMessageFor(model => model.MyEmployee.FirstName)
+    <br/>
+
+    @Html.LabelFor(model => model.MyEmployee.MiddleName)
+    @Html.EditorFor(model => model.MyEmployee.MiddleName)
+    @Html.ValidationMessageFor(model => model.MyEmployee.MiddleName)
+    <br />
+
+    @Html.LabelFor(model => model.MyEmployee.LastName)
+    @Html.EditorFor(model => model.MyEmployee.LastName)
+    @Html.ValidationMessageFor(model => model.MyEmployee.LastName)
+    <br />
+
+    @Html.LabelFor(model => model.MyEmployee.HireDate)
+    @Html.EditorFor(model => model.MyEmployee.HireDate)
+    @Html.ValidationMessageFor(model => model.MyEmployee.HireDate)
+    <br />
+
+    @Html.LabelFor(model => model.MyEmployee.TerminationDate)
+    @Html.EditorFor(model => model.MyEmployee.TerminationDate)
+    @Html.ValidationMessageFor(model => model.MyEmployee.TerminationDate)
+    <br />
+
+    @Html.LabelFor(model => model.MyEmployee.BirthDate)
+    @Html.EditorFor(model => model.MyEmployee.BirthDate)
+    @Html.ValidationMessageFor(model => model.MyEmployee.BirthDate)
+    <br />
+
+    @Html.LabelFor(model => model.MyEmployee.IsPresident)
+    @Html.EditorFor(model => model.MyEmployee.IsPresident)
+    @Html.ValidationMessageFor(model => model.MyEmployee.IsPresident)
+    <br />
+
+
+    <div class="form-group">
+      <div class="col-md-offset-2 col-md-10">
+        <input type="submit" value="Create" class="btn btn-default" />
+      </div>
+    </div>
+  </div>
+}
+
+<div>
+  @Html.ActionLink("Back to List", "Index")
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

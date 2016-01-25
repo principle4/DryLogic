@@ -1,0 +1,38 @@
+﻿<Window x:Class="Principle4.DryLogic.Demos.WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="221" Width="400" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:my="clr-namespace:Principle4.DryLogic.Demos.WPF" Loaded="Window_Loaded"
+        xmlns:extToolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit/extended"
+        >
+
+  <Grid>
+    <StackPanel>
+      <Grid Name="PnlForm" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Content="Last Name:" Grid.Row="0" />
+        <TextBox Grid.Row="0" Text="{Binding Path=LastName, ValidatesOnDataErrors=true}" Grid.Column="1"/>
+
+        <Label Content="Age:" Grid.Row="1" />
+        <TextBox Grid.Row="1" Text="{Binding Path=Age, ValidatesOnDataErrors=true}" Grid.Column="1"/>
+
+        <Label Content="Hire Date:" Grid.Row="2" Margin="-1,0,1,0"/>
+        <DatePicker Grid.Column="1" Grid.Row="2" SelectedDate="{Binding Path=HireDate, ValidatesOnDataErrors=true}" />
+
+        <Label Content="Is President:" Grid.Row="3" />
+        <CheckBox Grid.Column="1" Grid.Row="3" IsChecked="{Binding IsPresident}" VerticalAlignment="Center" />
+      </Grid>
+      <Button Content="Save" Height="23" HorizontalAlignment="Left"  Name="BtnSave" VerticalAlignment="Top" Width="75" Click="BtnSave_Click" />
+    </StackPanel>
+  </Grid>
+</Window>
+

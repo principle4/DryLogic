@@ -1,0 +1,41 @@
+﻿@model Principle4.DryLogic.Tests.Employee
+@using Principle4.DryLogic
+
+@{
+    ViewBag.Title = "Create Employee";
+}
+
+<h2>Create Employee</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true)
+
+        @Html.EditorFor(model => model.FirstName)
+        @Html.EditorFor(model => model.MiddleName)
+        @Html.EditorFor(model => model.LastName)
+        @Html.EditorFor(model => model.HireDate)
+        @Html.EditorFor(model => model.TerminationDate)
+        @Html.EditorFor(model => model.BirthDate)
+        @Html.EditorFor(model => model.IsPresident)
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>

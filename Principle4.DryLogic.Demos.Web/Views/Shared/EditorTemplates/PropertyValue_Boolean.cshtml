@@ -1,0 +1,15 @@
+﻿@using Principle4.DryLogic;
+@using Principle4.DryLogic.Web.MVC;
+
+@model PropertyValue
+@{
+  var valAttribs = MVCUtil.GetValidationAttributes(Model);
+}
+<div class="form-group">
+  @Html.Label("", Model.Definition.HumanName, new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+      @*We can assume that a boolean will always have a good value (except for a 3-state)*@
+      @Html.CheckBox("", (Boolean)Model.Value, valAttribs)
+      @Html.ValidationMessage("")
+    </div>
+</div>
