@@ -19,7 +19,7 @@ namespace Principle4.DryLogic.MVC
         base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
       else
       {
-        var oi = ObjectInstance.GetObjectInstance(bindingContext.Model, false);
+        var oi = ObjectInstance.GetObjectInstance(bindingContext.Model);
         //base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
         
         var request = controllerContext.HttpContext.Request;
@@ -53,7 +53,7 @@ namespace Principle4.DryLogic.MVC
       if (Attribute.IsDefined(bindingContext.ModelType, typeof(DryLogicObjectAttribute)))
       {
         //...then get the violated rules add add them to the modelstate
-        var oi = ObjectInstance.GetObjectInstance(obj, true);
+        var oi = ObjectInstance.GetObjectInstance(obj);
         foreach(RuleViolation violation in oi.GetRuleViolations())
         {
           String modelStateKey = null;

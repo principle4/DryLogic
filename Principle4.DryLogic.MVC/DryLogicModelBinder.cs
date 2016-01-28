@@ -22,7 +22,7 @@ namespace Principle4.DryLogic.MVC
         throw new InvalidOperationException($"Property '{propertyDescriptor.DisplayName}' cannot be written to.");
 
 
-      var oi = ObjectInstance.GetObjectInstance(bindingContext.Model, false);
+      var oi = ObjectInstance.GetObjectInstance(bindingContext.Model);
       //if this isn't a BOV backed property...
       if(oi.ObjectDefinition.Properties.ContainsKey(propertyDescriptor.DisplayName) == false)
         //...then use the default binder

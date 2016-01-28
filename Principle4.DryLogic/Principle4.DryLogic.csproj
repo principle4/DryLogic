@@ -70,7 +70,6 @@
     <Compile Include="Validation\TypeConvertableRule.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="MVC\" />
     <Folder Include="_dev\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

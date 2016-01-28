@@ -162,6 +162,9 @@ namespace Principle4.DryLogic.Tests
       set { OI.SetValue(IsPresidentProperty, value); }
     }
 
+    #endregion
+
+
     public string Error
     {
       get
@@ -177,7 +180,15 @@ namespace Principle4.DryLogic.Tests
         return ((IDataErrorInfo)OI)[columnName];
       }
     }
-    #endregion
+
+    public Boolean IsValid
+    {
+      get
+      {
+        return OI.Validate();
+      }
+    }
+
 
 
 
