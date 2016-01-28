@@ -9,7 +9,11 @@ namespace Principle4.DryLogic
 {
   public class ObjectInstance : INotifyPropertyChanged, IDataErrorInfo
   {
-    public static ObjectInstance GetObjectInstance(Object obj, Boolean throwException)
+    public static ObjectInstance GetObjectInstance(Object obj)
+    {
+      return GetObjectInstance(obj, false);
+    }
+    internal static ObjectInstance GetObjectInstance(Object obj, Boolean throwException)
     {
       var objectType = obj.GetType();
       CheckIsBOVObject(objectType, throwException);

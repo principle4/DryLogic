@@ -74,7 +74,7 @@ namespace Principle4.DryLogic.MVC
               }
             }
             //could use an attribute instead to identify the object instance
-            oi = ObjectInstance.GetObjectInstance(container, false);
+            oi = ObjectInstance.GetObjectInstance(container);
 
             if (oi != null)//not really sure how this woudl fail at this point
             {

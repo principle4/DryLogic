@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Principle4.DryLogic")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("Principle4")]
 [assembly: AssemblyProduct("Principle4.DryLogic")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2013")]
 [assembly: AssemblyTrademark("")]
@@ -23,6 +23,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("ef5b86c0-1c06-4564-ba10-8881abf22c8f")]
 
 [assembly: InternalsVisibleTo("Principle4.DryLogic.Tests")]
+[assembly: InternalsVisibleTo("Principle4.DryLogic.MVC")]
 
 
 // Version information for an assembly consists of the following four values:
