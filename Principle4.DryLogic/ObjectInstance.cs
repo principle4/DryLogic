@@ -39,13 +39,19 @@ namespace Principle4.DryLogic
     //It might make more sense to move this to object definition.  Not sure.
     public static Boolean CheckIsBOVObject(Type type, Boolean throwException)
     {
-      var defined = Attribute.IsDefined(type, typeof(DryLogicObjectAttribute));
-      if(throwException && !defined)
+      if (type == null)
       {
-        throw new DryLogicException("The given object/type is not marked as a BOVObject.  Did you forget to mark the class with a [BOVObject] attribute?");
+        return false;
       }
-      return defined;
-
+      else
+      {
+        var defined = Attribute.IsDefined(type, typeof(DryLogicObjectAttribute));
+        if (throwException && !defined)
+        {
+          throw new DryLogicException("The given object/type is not marked as a BOVObject.  Did you forget to mark the class with a [BOVObject] attribute?");
+        }
+        return defined;
+      }
     }
 
     public ObjectDefinition ObjectDefinition { get; private set; }
