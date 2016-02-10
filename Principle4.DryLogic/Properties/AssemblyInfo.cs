@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Principle4.DryLogic")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Principle4")]
+[assembly: AssemblyCompany("Rendered Solutions")]
 [assembly: AssemblyProduct("Principle4.DryLogic")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2013")]
+[assembly: AssemblyCopyright("Copyright © Rendered Solutions 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -23,7 +23,6 @@ using System.Runtime.InteropServices;
 [assembly: Guid("ef5b86c0-1c06-4564-ba10-8881abf22c8f")]
 
 [assembly: InternalsVisibleTo("Principle4.DryLogic.Tests")]
-[assembly: InternalsVisibleTo("Principle4.DryLogic.MVC")]
 
 
 // Version information for an assembly consists of the following four values:
@@ -36,5 +35,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.1.8.1")]
+[assembly: AssemblyFileVersion("0.1.8.1")]
