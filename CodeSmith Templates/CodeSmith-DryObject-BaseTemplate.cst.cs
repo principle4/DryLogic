@@ -21,10 +21,17 @@ public class TemplateBase : CodeTemplate
             return (SchemaExplorer.TableSchema) GetProperty("SourceTable");
         }
     }
+    private DBTypeOption DBType
+    {
+        get
+        {
+            return (DBTypeOption) GetProperty("DBType");
+        }
+        
+    }
 
     protected String PP="";
     
-    protected DBTypeOption DBType;
     
     public void Write(String format, params object[] args)
     {
@@ -126,11 +133,12 @@ public class TemplateBase : CodeTemplate
         if (propertyName == column.Table.Name + "Name") return "Name";
         if (propertyName == column.Table.Name + "Description") return "Description";
 
-        if (propertyName.EndsWith("TypeCode")) propertyName = propertyName.Substring(0, propertyName.Length - 4);
-        
-        //if all that is left is "Type" than it must be a clasification of the object itself
-        if(propertyName.EndsWith("TypeCode") && propertyName != "Type")
-            propertyName = propertyName.Substring(0, propertyName.Length - 4);
+        //decided against this - too many type codes are NOT enums
+//        if (propertyName.EndsWith("TypeCode")) propertyName = propertyName.Substring(0, propertyName.Length - 4);
+//        
+//        //if all that is left is "Type" than it must be a clasification of the object itself
+//        if(propertyName.EndsWith("TypeCode") && propertyName != "Type")
+//            propertyName = propertyName.Substring(0, propertyName.Length - 4);
             
 
         return propertyName;
@@ -152,8 +160,6 @@ public class TemplateBase : CodeTemplate
             }
         }
     }
-
-
 
 
 //    public string GetReaderMethod(ColumnSchema column) {
@@ -192,6 +198,22 @@ public class TemplateBase : CodeTemplate
         return this.GetClassName(this.SourceTable) + ".cs";
         //var sourceTable = (SchemaExplorer.TableSchema)GetProperty("DbSourceTable");
         //return this.GetClassName(sourceTable) + ".cs";
+    }
+    
+    public string GetCSharpVariableType(MapCollection dbyTypeCSharp, ColumnSchema column) {
+        if (column.Name.EndsWith("TypeCode")) 
+            return column.Name;
+        
+        if(IsOracleBool(column))
+        {
+            return "bool";
+        }   
+        return dbyTypeCSharp[column.DataType.ToString()];
+    }
+    
+    public Boolean IsOracleBool(ColumnSchema column)
+    {
+        return DBType == DBTypeOption.Oracle && column.NativeType == "NUMBER" && column.Scale==0 && column.Precision==1;
     }
     
 }

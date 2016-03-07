@@ -27,6 +27,8 @@ namespace <%=ClassNamespace%>
     }
 }
 
+using <%=ClassNamespace%>.Core;
+using App = <%=ClassNamespace%>.Core.App;
 
 using Principle4.DryLogic;
 using Principle4.DryLogic.Validation;
@@ -91,20 +93,20 @@ namespace <%=ClassNamespace%>
     ",",
     (a) => new []{a.Name}
 );%> 
-values(<% WriteForEach(npkCols,@"
+)values(<% WriteForEach(npkCols,@"
     {1}{0}",
     ",",
     (a) => new []{a.Name, PP}
 );%>
 )  <%= DBType==DBTypeOption.SqlServer? "output inserted.id" : "returning id into :id" %>
-
+";
             #endregion
 
             #region Parameters
             var p = new DynamicParameters(new {
             <% for (int i = 0; i < npkCols.Count; i++) {
                 var column = npkCols[i];%>
-                <%= column.Name %> = data.<%= GetPropertyName(column) + (i<npkCols.Count-1?",":"")%>
+                <%= column.Name %> = data.<%= GetPropertyName(column) + (IsOracleBool(column)?"?1:0":"") + (i<npkCols.Count-1?",":"")%>
             <%}%> 
             });
             <%if(DBType == DBTypeOption.Oracle)%>
@@ -114,10 +116,45 @@ values(<% WriteForEach(npkCols,@"
             using(var conn = App.DataAccess.GetConnection())
             {
                 conn.Open();
-                data.Id = conn.Query<<%= GetPrimaryKeyType(SourceTable) %>>(sql, param:p);
+                data.Id = conn.Query<<%= GetPrimaryKeyType(SourceTable) %>>(sql, param:p).Single();
             }
             return data;
 		}
+        
+        /// <summary>
+        /// Updates an existing <%= className %> instance to the database.
+        /// </summary>
+        /// <param name="data"><%= className %> instance to update</param>
+        /// <returns>The original <%= className %></returns>
+		public static <%= className %> Update(<%= className %> data)
+		{
+                    
+            #region cmd - update <%= SourceTable.Name %>...
+            String sql =
+@"update <%= SourceTable.Name %> set <% WriteForEach(npkCols,@"
+    {0}={1}{2}",
+    ",",
+    (a) => new []{a.Name, PP, a.Name}
+);%> 
+";
+            #endregion
+
+            #region Parameters
+            var p = new DynamicParameters(new {
+            <% for (int i = 0; i < npkCols.Count; i++) {
+                var column = npkCols[i];%>
+                <%= column.Name %> = data.<%= GetPropertyName(column) + (IsOracleBool(column)?"?1:0":"") + (i<npkCols.Count-1?",":"")%>
+            <%}%> 
+            });
+            #endregion
+            
+            using(var conn = App.DataAccess.GetConnection())
+            {
+                conn.Open();
+            }
+            return data;
+		}
+         
         
         
         /// <summary>
@@ -142,7 +179,6 @@ Where <%= SourceTable.PrimaryKey.MemberColumns[0].Name %> = <%= PP + SourceTable
             {
                 return conn.Query<<%= className %>>(sql, param:new {<%= SourceTable.PrimaryKey.MemberColumns[0].Name %> = id}).Single();
             }
-            return data;
     	}
     }
 }
@@ -161,10 +197,9 @@ Where <%= SourceTable.PrimaryKey.MemberColumns[0].Name %> = <%= PP + SourceTable
         return GetPascalCaseName(SourceTable.Name) + ".cs";
     }  
     
+    
     public string GetCSharpVariableType(ColumnSchema column) {
-        if (column.Name.EndsWith("TypeCode")) 
-            return column.Name;
-        return DbTypeCSharp[column.DataType.ToString()];
+        return base.GetCSharpVariableType(DbTypeCSharp, column);
     }
     
 </script>

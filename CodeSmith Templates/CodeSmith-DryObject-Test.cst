@@ -1,4 +1,4 @@
-﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="false" Description="Generates a very simple business object." Src="CodeSmith-DryObject-BaseTemplate.cst.cs" Inherits="TemplateBase" %>
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="true" Description="Generates a very simple business object." Src="CodeSmith-DryObject-BaseTemplate.cst.cs" Inherits="TemplateBase" %>
 <%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table that the object is based on." %>
 <%@ Property Name="ClassNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Namespace your class is in. Only used if SingleFileMode is true!" %>
 <%@ Assembly Name="SchemaExplorer" %>
@@ -18,7 +18,7 @@
 namespace <%=ClassNamespace%>.Tests
 {
   [TestClass]
-  public class <%= className %>
+  public class <%= className %>Tests
   {
     [TestMethod]
     public void AddGet()
@@ -34,7 +34,7 @@ namespace <%=ClassNamespace%>.Tests
         var col = SourceTable.NonPrimaryKeyColumns[i];
         %>
         <%= GetPropertyName(col) + " = " + GetCSharpVariableType(col) + (i<SourceTable.NonPrimaryKeyColumns.Count-1?",":"")%>
-        <%} %>
+        <%}; %>
       }
     }
   }
@@ -54,9 +54,7 @@ namespace <%=ClassNamespace%>.Tests
     }   
     
     public string GetCSharpVariableType(ColumnSchema column) {
-        if (column.Name.EndsWith("TypeCode")) 
-            return column.Name;
-        return DbTypeCSharp[column.DataType.ToString()];
+        return base.GetCSharpVariableType(DbTypeCSharp, column);
     }
     
 

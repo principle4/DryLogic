@@ -34,7 +34,7 @@ namespace Principle4.DryLogic.Demos.Web
       var existingProvider = ModelValidatorProviders.Providers
           .Single(x => x is ClientDataTypeModelValidatorProvider);
       ModelValidatorProviders.Providers.Remove(existingProvider);
-      ModelValidatorProviders.Providers.Add(new BOVClientDataTypeModelValidatorProvider());
+      ModelValidatorProviders.Providers.Add(new Principle4.DryLogic.MVC.DryLogicClientDataTypeModelValidatorProvider());
 
     }
   }
