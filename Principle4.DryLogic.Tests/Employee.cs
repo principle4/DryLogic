@@ -66,7 +66,8 @@ namespace Principle4.DryLogic.Tests
           .IsConvertable()
           .IsAdhearingTo(oi => p[oi] < DateTime.Today.AddYears(-18))
             .IdentifiedBy(">18") //this is where an 'and' operator would be nice.  Without it, we rely on the 'Is' convention to identify the start of a new rule
-            .WithMessage("Employee must be at least 18 years old.");
+            .WithMessage("Employee must be at least 18 years old.")
+						.When(oi => oi.)
         ;
       });
 
