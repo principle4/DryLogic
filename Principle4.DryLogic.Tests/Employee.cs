@@ -61,13 +61,13 @@ namespace Principle4.DryLogic.Tests
       //  = OD.Properties.Add(BirthDateProperty,"BirthDate", "First Name", p =>
       = OD.AddProperty(pi => pi.BirthDate, p =>
       {
+				p.Formatter = v => v.ToString("MM/dd/yyyy");
         Assert.That(p)
           .IsRequired()
           .IsConvertable()
           .IsAdhearingTo(oi => p[oi] < DateTime.Today.AddYears(-18))
             .IdentifiedBy(">18") //this is where an 'and' operator would be nice.  Without it, we rely on the 'Is' convention to identify the start of a new rule
             .WithMessage("Employee must be at least 18 years old.")
-						.When(oi => oi.)
         ;
       });
 

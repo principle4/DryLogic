@@ -44,8 +44,9 @@ namespace Principle4.DryLogic.MVC
 
             var modelMetadata = new ModelMetadata(this, containerType, modelAccessor, modelType, propertyName);
             modelMetadata.Container = container;
-            //internally, setting model wipes out modelAccessor (caching of sorts)
-            modelMetadata.Model = oi.PropertyValues[propertyName].StringValue;
+						//internally, setting model wipes out modelAccessor (caching of sorts)
+						modelMetadata.Model = oi.PropertyValues[propertyName].FormattedValue;
+
             modelMetadata.DisplayName = oi.PropertyValues[propertyName].Definition.CurrentName;
             //we could make this a configurable option
             //modelMetadata.TemplateHint = "PropertyValue";
