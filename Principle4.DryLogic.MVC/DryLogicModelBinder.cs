@@ -16,10 +16,6 @@ namespace Principle4.DryLogic.MVC
 
     protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, System.ComponentModel.PropertyDescriptor propertyDescriptor)
     {
-      //make sure this is actually a property that can be set (don't want to provide a back door to overposting)
-      var prop = bindingContext.ModelType.GetProperty(propertyDescriptor.DisplayName, BindingFlags.Public | BindingFlags.Instance);
-      if (prop == null || prop.CanWrite == false)
-        throw new InvalidOperationException($"Property '{propertyDescriptor.DisplayName}' cannot be written to.");
 
 
       var oi = ObjectInstance.GetObjectInstance(bindingContext.Model);
@@ -31,6 +27,12 @@ namespace Principle4.DryLogic.MVC
       //BOV binder
       else
       {
+				//make sure this is actually a property that can be set (don't want to provide a back door to overposting)
+				//update 5/26/2016: Should I be checking that the form collection even contained a value for this property first?
+				var prop = bindingContext.ModelType.GetProperty(propertyDescriptor.DisplayName, BindingFlags.Public | BindingFlags.Instance);
+				if (prop == null || prop.CanWrite == false)
+					throw new InvalidOperationException($"Property '{propertyDescriptor.DisplayName}' cannot be written to.");
+
         //base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
         
         var request = controllerContext.HttpContext.Request;

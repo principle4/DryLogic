@@ -45,7 +45,8 @@ namespace Principle4.DryLogic.MVC
             var modelMetadata = new ModelMetadata(this, containerType, modelAccessor, modelType, propertyName);
             modelMetadata.Container = container;
 						//internally, setting model wipes out modelAccessor (caching of sorts)
-						modelMetadata.Model = oi.PropertyValues[propertyName].FormattedValue;
+						//modelMetadata.Model = oi.PropertyValues[propertyName].FormattedValue;
+						modelMetadata.Model = new ValueProxy(oi.PropertyValues[propertyName]);
 
             modelMetadata.DisplayName = oi.PropertyValues[propertyName].Definition.CurrentName;
             //we could make this a configurable option
@@ -66,4 +67,23 @@ namespace Principle4.DryLogic.MVC
     {
     }
   }
+	public class ValueProxy
+	{
+		public PropertyValue PropertyValue { get; private set; }
+
+		public ValueProxy(PropertyValue pv)
+		{
+			PropertyValue = pv;
+		}
+		public override string ToString()
+		{
+			return PropertyValue.FormattedValue;
+		}
+		public static implicit operator string(ValueProxy d)
+		{
+			return d.ToString();
+		}
+
+
+	}
 }

@@ -97,12 +97,15 @@ namespace Principle4.DryLogic
       propertyDefinition.GetPropertyValue(this).TypedValue = value;
     }
 
-    public Boolean Validate()
-    {
-      List<RuleViolation> ruleViolations;
-      return Validate(out ruleViolations);
-    }
-    public Boolean Validate(out List<RuleViolation> ruleViolations)
+		public Boolean Validate()
+		{
+			return ObjectDefinition.Validate(this);
+		}
+		public Boolean ValidateProperties()
+		{
+			return ObjectDefinition.ValidateProperties(this);
+		}
+		public Boolean Validate(out List<RuleViolation> ruleViolations)
     {
       return ObjectDefinition.Validate(this, out ruleViolations);
     }

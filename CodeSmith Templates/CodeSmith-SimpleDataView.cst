@@ -13,25 +13,11 @@
 
 <%@ Property Name="DBType" Type="DBTypeOption" Category="Options" Default="1" Description="Type of RDBMS to generate for" %>
 
-using Principle4.DryLogic;
-namespace <%=ClassNamespace%>
-{
-    public abstract class LogicClassBase<T>
-    {
-        protected ObjectInstance OI {get; private set;}
-        
-        protected LogicClassBase(ObjectDefinition<T> od)
-        {
-            oi=OD.CreateInstance(this);
-        }
-    }
-}
 
-using System;
-using System.Collections.Generic;
-using System.Data;
+
 using <%=ClassNamespace%>.Core;
 using App = <%=ClassNamespace%>.Core.App;
+
 using Principle4.DryLogic;
 using Principle4.DryLogic.Validation;
 using Dapper;
