@@ -72,6 +72,26 @@ namespace Principle4.DryLogic.Validation
       return rb;
     }
 
+    public static PropertyRuleBuilder IsStringLengthBetween(this PropertyRuleBuilder rb, int minLength, int maxLength)
+    {
+      rb.AddRule(new StringLengthRule(rb.Property, minLength, maxLength));
+      return rb;
+    }
+    public static PropertyRuleBuilder IsValidString(this PropertyRuleBuilder rb, params string[] invalidStrings)
+    {
+      rb.AddRule(new InvalidStringRule(rb.Property, invalidStrings));
+      return rb;
+    }
+    public static PropertyRuleBuilder IsMatchingPattern(this PropertyRuleBuilder rb, string pattern)
+    {
+      rb.AddRule(new RegexRule(rb.Property, pattern));
+      return rb;
+    }
+    public static PropertyRuleBuilder IsBetween(this PropertyRuleBuilder rb, object minimum, object maximum)
+    {
+      rb.AddRule(new RangeRule(rb.Property, minimum, maximum));
+      return rb;
+    }
     //public static RuleBuilder<PropertyDefinition<String>> IsRequired(this RuleBuilder<PropertyDefinition<String>> rb)
     //{
     //  rb.AddRule(new RequiredRule());

@@ -96,11 +96,11 @@ namespace Principle4.DryLogic
 		public Boolean ValidateProperties(ObjectInstance oi, out List<RuleViolation> ruleViolations)
 		{
 			ruleViolations = GetPropertyRuleViolations(oi).ToList();
-			return ruleViolations.Any();
+			return !ruleViolations.Any();
 		}
 		public Boolean ValidateProperties(ObjectInstance oi)
 		{
-			return GetPropertyRuleViolations(oi).Any();
+			return !GetPropertyRuleViolations(oi).Any();
 		}
 
 		public IEnumerable<RuleViolation> GetRuleViolations(ObjectInstance oi)

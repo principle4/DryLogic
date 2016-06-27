@@ -143,7 +143,7 @@ namespace Principle4.DryLogic
       get {
         //might be worth adding a short circuit into isvalid (although I don't think that "Error" is commonly used over the indexer)
         List<RuleViolation> ruleViolations;
-        if (!Validate(out ruleViolations))
+        if (!Validate(out ruleViolations) && ruleViolations.Any())
         {
           return ruleViolations.First().ErrorMessage;
         }
