@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Principle4.DryLogic.Validation
 {
-  public class StringLengthRule : PropertyRule
+  public class StringLengthRule : PropertyRule, IStaticErrorMessage
   {
     public int MinimumLength { get; private set; }
     public int MaximumLength { get; private set; }
@@ -24,8 +24,15 @@ namespace Principle4.DryLogic.Validation
         return stringValue.Length >= MinimumLength && stringValue.Length <= MaximumLength;
       };
 
-      base.ErrorMessageGenerator = () => String.Format("'{0}' must be between {1} and {2}.", propertyDefinition.CurrentName, MinimumLength, MaximumLength);
+      base.ErrorMessageGenerator = (oi) => String.Format("'{0}' must be between {1} and {2}.", propertyDefinition.CurrentName, MinimumLength, MaximumLength);
     }
 
-  }
+		public string ErrorMessage
+		{
+			get
+			{
+				return ErrorMessageGenerator(null);
+			}
+		}
+	}
 }

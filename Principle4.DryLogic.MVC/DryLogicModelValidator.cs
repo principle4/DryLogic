@@ -26,24 +26,27 @@ namespace Principle4.DryLogic.MVC
       var propDef = od.Properties[Metadata.PropertyName];
       foreach (Rule rule in propDef.Rules)
       {
-        if (rule is RequiredRule)
-          yield return new ModelClientValidationRequiredRule(rule.ErrorMessage);
-        else if (rule is StringLengthRule)
-          yield return new ModelClientValidationStringLengthRule(rule.ErrorMessage, ((StringLengthRule)rule).MinimumLength, ((StringLengthRule)rule).MaximumLength);
-        else if (rule is RegexRule)
-          yield return new ModelClientValidationRegexRule(rule.ErrorMessage, ((RegexRule)rule).Pattern);
-        else if (rule is RangeRule)
-          yield return new ModelClientValidationRangeRule(rule.ErrorMessage, ((RangeRule)rule).MinimumValue, ((RangeRule)rule).MaximumValue);
-        //very helpful ideas:
-        //http://stackoverflow.com/questions/4828297/how-to-change-data-val-number-message-validation-in-mvc-while-it-is-generated
-        else if (rule is TypeConvertableRule && propDef.ValueType == typeof(DateTime))
-          yield return new ModelClientValidationRule()
-          {
-            //data-val-number
-            ValidationType = "date",
-            ErrorMessage = rule.ErrorMessage
-          };
-      }
+				if (rule is IStaticErrorMessage)
+				{
+					if (rule is RequiredRule)
+						yield return new ModelClientValidationRequiredRule(((IStaticErrorMessage)rule).ErrorMessage);
+					else if (rule is StringLengthRule)
+						yield return new ModelClientValidationStringLengthRule(((IStaticErrorMessage)rule).ErrorMessage, ((StringLengthRule)rule).MinimumLength, ((StringLengthRule)rule).MaximumLength);
+					else if (rule is RegexRule)
+						yield return new ModelClientValidationRegexRule(((IStaticErrorMessage)rule).ErrorMessage, ((RegexRule)rule).Pattern);
+					else if (rule is RangeRule)
+						yield return new ModelClientValidationRangeRule(((IStaticErrorMessage)rule).ErrorMessage, ((RangeRule)rule).MinimumValue, ((RangeRule)rule).MaximumValue);
+					//very helpful ideas:
+					//http://stackoverflow.com/questions/4828297/how-to-change-data-val-number-message-validation-in-mvc-while-it-is-generated
+					else if (rule is TypeConvertableRule && propDef.ValueType == typeof(DateTime))
+						yield return new ModelClientValidationRule()
+						{
+							//data-val-number
+							ValidationType = "date",
+							ErrorMessage = ((IStaticErrorMessage)rule).ErrorMessage
+						};
+				}
+			}
     }
   }
 }

@@ -10,15 +10,17 @@ namespace Principle4.DryLogic
  
     public Func<ObjectInstance, bool> Assertion { get; set; }
 
-    //public Func<ObjectInstance, String> ErrorMessageFormatter { get; set; }
-    public Func<String> ErrorMessageGenerator { get; set; }
+		//public Func<ObjectInstance, String> ErrorMessageFormatter { get; set; }
+		public Func<ObjectInstance,String> ErrorMessageGenerator { get; set; }
 
-    public String ErrorMessage {
-      get
-      {
-        return ErrorMessageGenerator();
-      }
-    }
+
+		// 7/2106 - Needed a way to sometimes display the value in the message and this only works when this isn't the case
+		//public String ErrorMessage {
+  //    get
+  //    {
+  //      return ErrorMessageStaticGenerator();
+  //    }
+  //  }
 
     public Func<ObjectInstance, bool> Condition { get; set; }
 
@@ -27,7 +29,7 @@ namespace Principle4.DryLogic
     public Rule()
     {
       //add the default error message formatter
-      ErrorMessageGenerator = () => String.Format("Rule {0} is invalid.", Id);
+      ErrorMessageGenerator = (oi) => String.Format("Rule {0} is invalid.", Id);
     }
 	}
 }

@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Principle4.DryLogic.Validation
 {
-  public class RegexRule : PropertyRule
+  public class RegexRule : PropertyRule, IStaticErrorMessage
   {
     public string Pattern { get; private set; }
     public RegexRule(PropertyDefinition propertyDefinition, string pattern) : base(propertyDefinition)
@@ -24,9 +24,16 @@ namespace Principle4.DryLogic.Validation
         return new Regex(pattern, RegexOptions.IgnoreCase).IsMatch(stringValue);
       };
 
-      base.ErrorMessageGenerator = () =>
+      base.ErrorMessageGenerator = (oi) =>
         $"'{propertyDefinition.CurrentName}' must match the pattern {Pattern}.";
     }
 
+		public string ErrorMessage
+		{
+			get
+			{
+				return ErrorMessageGenerator(null);
+			}
+		}
   }
 }

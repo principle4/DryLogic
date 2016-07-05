@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Principle4.DryLogic.Validation
 {
-  public class InvalidStringRule : PropertyRule
+  public class InvalidStringRule : PropertyRule, IStaticErrorMessage
   {
     public string[] InvalidStrings { get; private set; }
     public InvalidStringRule(PropertyDefinition propertyDefinition, params string[] invalidStrings) : base(propertyDefinition)
@@ -22,9 +22,16 @@ namespace Principle4.DryLogic.Validation
         return !InvalidStrings.Any(ic => stringValue.Contains(ic));
       };
 
-      base.ErrorMessageGenerator = () =>
+      base.ErrorMessageGenerator = (oi) =>
         $"'{propertyDefinition.CurrentName}' cannot contain any of the following values {string.Join(",", InvalidStrings)}.";
     }
 
-  }
+		public string ErrorMessage
+		{
+			get
+			{
+				return ErrorMessageGenerator(null);
+			}
+		}
+	}
 }
