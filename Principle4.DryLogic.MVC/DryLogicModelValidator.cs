@@ -26,16 +26,16 @@ namespace Principle4.DryLogic.MVC
       var propDef = od.Properties[Metadata.PropertyName];
       foreach (Rule rule in propDef.Rules)
       {
-				if (rule is IStaticErrorMessage)
+				if (rule.ErrorMessageStaticGenerator != null)
 				{
 					if (rule is RequiredRule)
-						yield return new ModelClientValidationRequiredRule(((IStaticErrorMessage)rule).ErrorMessage);
+						yield return new ModelClientValidationRequiredRule(rule.ErrorMessageStaticGenerator());
 					else if (rule is StringLengthRule)
-						yield return new ModelClientValidationStringLengthRule(((IStaticErrorMessage)rule).ErrorMessage, ((StringLengthRule)rule).MinimumLength, ((StringLengthRule)rule).MaximumLength);
+						yield return new ModelClientValidationStringLengthRule(rule.ErrorMessageStaticGenerator(), ((StringLengthRule)rule).MinimumLength, ((StringLengthRule)rule).MaximumLength);
 					else if (rule is RegexRule)
-						yield return new ModelClientValidationRegexRule(((IStaticErrorMessage)rule).ErrorMessage, ((RegexRule)rule).Pattern);
+						yield return new ModelClientValidationRegexRule(rule.ErrorMessageStaticGenerator(), ((RegexRule)rule).Pattern);
 					else if (rule is RangeRule)
-						yield return new ModelClientValidationRangeRule(((IStaticErrorMessage)rule).ErrorMessage, ((RangeRule)rule).MinimumValue, ((RangeRule)rule).MaximumValue);
+						yield return new ModelClientValidationRangeRule(rule.ErrorMessageStaticGenerator(), ((RangeRule)rule).MinimumValue, ((RangeRule)rule).MaximumValue);
 					//very helpful ideas:
 					//http://stackoverflow.com/questions/4828297/how-to-change-data-val-number-message-validation-in-mvc-while-it-is-generated
 					else if (rule is TypeConvertableRule && propDef.ValueType == typeof(DateTime))
@@ -43,7 +43,7 @@ namespace Principle4.DryLogic.MVC
 						{
 							//data-val-number
 							ValidationType = "date",
-							ErrorMessage = ((IStaticErrorMessage)rule).ErrorMessage
+							ErrorMessage = rule.ErrorMessageStaticGenerator()
 						};
 				}
 			}

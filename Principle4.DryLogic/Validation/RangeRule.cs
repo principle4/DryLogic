@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace Principle4.DryLogic.Validation
 {
-  public class RangeRule : PropertyRule, IStaticErrorMessage
+  public class RangeRule : PropertyRule
   {
     public object MinimumValue { get; private set; }
     public object MaximumValue { get; private set; }
@@ -61,15 +61,8 @@ namespace Principle4.DryLogic.Validation
         throw new InvalidOperationException("Range type must be one of the following types: int, float, double, DateTime");
       };
 
-      base.ErrorMessageGenerator = (oi) =>
+      base.ErrorMessageInstanceGenerator = (oi) =>
         $"'{propertyDefinition.CurrentName}' must be between {MinimumValue} and {MaximumValue}.";
     }
-		public string ErrorMessage
-		{
-			get
-			{
-				return ErrorMessageGenerator(null);
-			}
-		}
 	}
 }

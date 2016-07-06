@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Principle4.DryLogic.Validation
 {
-  public class TypeConvertableRule : PropertyRule, IStaticErrorMessage
+  public class TypeConvertableRule : PropertyRule
   {
     public TypeConvertableRule(PropertyDefinition propertyDefinition)
       : base(propertyDefinition)
@@ -17,19 +17,11 @@ namespace Principle4.DryLogic.Validation
         return propertyValue.TypedValueIsAvailable;
       };	
 
-      base.ErrorMessageGenerator = (oi) => String.Format(
+      base.ErrorMessageInstanceGenerator = (oi) => String.Format(
         "{0} must be a valid {1}.", 
         propertyDefinition.CurrentName, 
         App.CurrentContext.IsHumanInterface ? GetHumanNameForType(propertyDefinition.ValueType) : propertyDefinition.ValueType.ToString());
     }
-
-		public string ErrorMessage
-		{
-			get
-			{
-				return base.ErrorMessageGenerator(null);
-			}
-		}
 
 		//at some point we may need a provider/dependency injection so that this can be controlled by the developer.
 		private String GetHumanNameForType(Type type)

@@ -46,21 +46,21 @@ namespace Principle4.DryLogic.Validation
     }
     public PropertyRuleBuilder WithMessage(Func<String> errorMessageGenerator)
     {
-      CurrentRule.ErrorMessageGenerator = new Func<ObjectInstance, String>( (oi) => errorMessageGenerator());
+      CurrentRule.ErrorMessageStaticGenerator = errorMessageGenerator;
       return this;
     }
 
     //assumes a single placeholder {0} to be replaced by current name
     public PropertyRuleBuilder WithMessage(String errorMessageFormatter)
     {
-      CurrentRule.ErrorMessageGenerator
-        = new Func<ObjectInstance,string>(
-          (oi) => String.Format(errorMessageFormatter, CurrentRule.Property.CurrentName));
+      CurrentRule.ErrorMessageStaticGenerator
+        = new Func<String>(
+          () => String.Format(errorMessageFormatter, CurrentRule.Property.CurrentName));
       return this;
     }
 		public PropertyRuleBuilder WithMessage(Func<ObjectInstance, String> errorMessageGenerator)
 		{
-			CurrentRule.ErrorMessageGenerator = errorMessageGenerator;
+			CurrentRule.ErrorMessageInstanceGenerator = errorMessageGenerator;
 			return this;
 		}
   }
