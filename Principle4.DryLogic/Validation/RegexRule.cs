@@ -24,8 +24,7 @@ namespace Principle4.DryLogic.Validation
         return new Regex(pattern, RegexOptions.IgnoreCase).IsMatch(stringValue);
       };
 
-      base.ErrorMessageInstanceGenerator = (oi) =>
-        $"'{propertyDefinition.CurrentName}' must match the pattern {Pattern}.";
+      base.ErrorMessageStaticGenerator = () => $"'{propertyDefinition.CurrentName}' must match the pattern {Pattern}.";
     }
   }
 }

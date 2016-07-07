@@ -24,9 +24,8 @@ namespace Principle4.DryLogic.Validation
         return stringValue.Length >= MinimumLength && stringValue.Length <= MaximumLength;
       };
 
-      base.ErrorMessageInstanceGenerator = (oi) => String.Format("'{0}' must be between {1} and {2}.", propertyDefinition.CurrentName, MinimumLength, MaximumLength);
+      base.ErrorMessageStaticGenerator = () =>
+        $"'{propertyDefinition.CurrentName}' must be between {MinimumLength} and {MaximumLength}.";
     }
-
-
 	}
 }

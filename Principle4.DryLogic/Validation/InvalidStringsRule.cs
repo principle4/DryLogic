@@ -22,8 +22,7 @@ namespace Principle4.DryLogic.Validation
         return !InvalidStrings.Any(ic => stringValue.Contains(ic));
       };
 
-      base.ErrorMessageInstanceGenerator = (oi) =>
-        $"'{propertyDefinition.CurrentName}' cannot contain any of the following values {string.Join(",", InvalidStrings)}.";
+      base.ErrorMessageStaticGenerator = () => $"'{propertyDefinition.CurrentName}' cannot contain any of the following values {string.Join(",", InvalidStrings)}.";
     }
 	}
 }

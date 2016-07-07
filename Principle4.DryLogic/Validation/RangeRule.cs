@@ -61,8 +61,7 @@ namespace Principle4.DryLogic.Validation
         throw new InvalidOperationException("Range type must be one of the following types: int, float, double, DateTime");
       };
 
-      base.ErrorMessageInstanceGenerator = (oi) =>
-        $"'{propertyDefinition.CurrentName}' must be between {MinimumValue} and {MaximumValue}.";
+      base.ErrorMessageStaticGenerator = () => $"'{propertyDefinition.CurrentName}' must be between {MinimumValue} and {MaximumValue}.";
     }
 	}
 }
