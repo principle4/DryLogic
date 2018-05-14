@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rendered Solutions")]
 [assembly: AssemblyProduct("Principle4.DryLogic.MVC")]
-[assembly: AssemblyCopyright("Copyright © Rendered Solutions 2016. Subject to LGPL-3.0 License")]
+[assembly: AssemblyCopyright("Copyright © Rendered Solutions 2016. Subject to Apache License 2.0")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
