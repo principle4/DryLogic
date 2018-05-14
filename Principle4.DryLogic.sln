@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Principle4.DryLogic", "Principle4.DryLogic\Principle4.DryLogic.csproj", "{C270C822-24CF-46A4-82FF-40443F931CE4}"
 EndProject
@@ -12,6 +12,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Principle4.DryLogic.Demos.Web", "Principle4.DryLogic.Demos.Web\Principle4.DryLogic.Demos.Web.csproj", "{7671AC4F-6C6F-4FFB-80E8-368D3761770D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Principle4.DryLogic.MVC", "Principle4.DryLogic.MVC\Principle4.DryLogic.MVC.csproj", "{452F5736-00F6-4152-886A-DF83B885F253}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeSmith Templates", "CodeSmith Templates", "{9195F933-954F-4EC8-8887-8548124CD4FE}"
+	ProjectSection(SolutionItems) = preProject
+		CodeSmith Templates\CodeSmith-DryObject-BaseTemplate.cst.cs = CodeSmith Templates\CodeSmith-DryObject-BaseTemplate.cst.cs
+		CodeSmith Templates\CodeSmith-DryObject-Test.cst = CodeSmith Templates\CodeSmith-DryObject-Test.cst
+		CodeSmith Templates\CodeSmith-DryObject.cst = CodeSmith Templates\CodeSmith-DryObject.cst
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,26 +85,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://godzillacoder.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Principle4.DryLogic.Tests\\Principle4.DryLogic.Tests.csproj
-		SccProjectName1 = Principle4.DryLogic.Tests
-		SccLocalPath1 = Principle4.DryLogic.Tests
-		SccProjectUniqueName2 = Principle4.DryLogic\\Principle4.DryLogic.csproj
-		SccProjectName2 = Principle4.DryLogic
-		SccLocalPath2 = Principle4.DryLogic
-		SccProjectUniqueName3 = Principle4.DryLogic.Demos.WPF\\Principle4.DryLogic.Demos.WPF.csproj
-		SccProjectName3 = Principle4.DryLogic.Demos.WPF
-		SccLocalPath3 = Principle4.DryLogic.Demos.WPF
-		SccProjectUniqueName4 = Principle4.DryLogic.Demos.Web\\Principle4.DryLogic.Demos.Web.csproj
-		SccProjectName4 = Principle4.DryLogic.Demos.Web
-		SccLocalPath4 = Principle4.DryLogic.Demos.Web
-		SccProjectUniqueName5 = Principle4.DryLogic.MVC\\Principle4.DryLogic.MVC.csproj
-		SccProjectName5 = Principle4.DryLogic.MVC
-		SccLocalPath5 = Principle4.DryLogic.MVC
 	EndGlobalSection
 EndGlobal

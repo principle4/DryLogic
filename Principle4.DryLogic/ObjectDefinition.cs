@@ -14,18 +14,27 @@ namespace Principle4.DryLogic
 
     }
 
-    public PropertyDefinition<U> AddProperty<U>(Expression<Func<T, U>> propertyAccessor, Action<PropertyDefinition<U>> initializer)
-    {
-      String propertyName = Utility.GetPropertyName(propertyAccessor);
-      return Properties.Add(
-        propertyName,
-        Utility.AddSpacesToCapitalCase(propertyName),
-        initializer
-        );
-    }
-  }
+		public PropertyDefinition<U> AddProperty<U>(Expression<Func<T, U>> propertyAccessor, Action<PropertyDefinition<U>> initializer)
+		{
+			String propertyName = Utility.GetPropertyName(propertyAccessor);
+			return Properties.Add(
+				propertyName,
+				Utility.AddSpacesToCapitalCase(propertyName),
+				initializer
+				);
+		}
+		public PropertyDefinition<U> AddProperty<U>(Expression<Func<T, U>> propertyAccessor, string humanName, Action<PropertyDefinition<U>> initializer)
+		{
+			String propertyName = Utility.GetPropertyName(propertyAccessor);
+			return Properties.Add(
+				propertyName,
+				humanName,
+				initializer
+				);
+		}
+	}
 
-  public abstract class ObjectDefinition : IValidatable 
+	public abstract class ObjectDefinition : IValidatable 
   {
     public static ObjectDefinition GetObjectDefinition(Type objectType, Boolean throwException)
     {
@@ -75,13 +84,32 @@ namespace Principle4.DryLogic
       return new ObjectInstance(this, parentObject);
     }
 
-    public Boolean Validate(ObjectInstance oi, out List<RuleViolation> ruleViolations)
-    {
-      ruleViolations = GetRuleViolations(oi).ToList();
-      return ruleViolations.Count == 0;
-    }
+		public Boolean Validate(ObjectInstance oi)
+		{
+			return ValidateProperties(oi); //&& //TODO: check class level rules
+		}
+		public Boolean Validate(ObjectInstance oi, out List<RuleViolation> ruleViolations)
+		{
+			return ValidateProperties(oi, out ruleViolations);
+			//TODO: Also include class level rules
+		}
+		public Boolean ValidateProperties(ObjectInstance oi, out List<RuleViolation> ruleViolations)
+		{
+			ruleViolations = GetPropertyRuleViolations(oi).ToList();
+			return !ruleViolations.Any();
+		}
+		public Boolean ValidateProperties(ObjectInstance oi)
+		{
+			return !GetPropertyRuleViolations(oi).Any();
+		}
 
-    public IEnumerable<RuleViolation> GetRuleViolations(ObjectInstance oi)
+		public IEnumerable<RuleViolation> GetRuleViolations(ObjectInstance oi)
+		{
+			return GetPropertyRuleViolations(oi);
+			//TODO: also do class level rules
+		}
+
+		public IEnumerable<RuleViolation> GetPropertyRuleViolations(ObjectInstance oi)
     {
       RuleViolationFromException ruleViolationFromException=null;
       Boolean successfullyReturned = false;
@@ -115,6 +143,8 @@ namespace Principle4.DryLogic
         throw new DryLogicException(ruleViolationFromException.ErrorMessage, ruleViolationFromException.CaughtException);
       }
     }
+
+
 
 
     public PropertyDictionary Properties { get; private set; }

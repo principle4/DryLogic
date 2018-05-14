@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Principle4.DryLogic.Validation;
 using System.Reflection;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Principle4.DryLogic.MVC
 {
@@ -13,16 +14,23 @@ namespace Principle4.DryLogic.MVC
   //http://www.codeproject.com/Articles/605595/ASP-NET-MVC-Custom-Model-Binder
   public class DryLogicModelBinder : DefaultModelBinder
   {
+    protected override ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext)
+    {
+      if (!bindingContext.ModelType.IsAbstract || bindingContext.Model == null)
+        return base.GetTypeDescriptor(controllerContext, bindingContext);
+      var concreteType = bindingContext.Model.GetType();
 
+      if (Nullable.GetUnderlyingType(concreteType) == null)
+      {
+        return new AssociatedMetadataTypeTypeDescriptionProvider(concreteType).GetTypeDescriptor(concreteType);
+      }
+      return base.GetTypeDescriptor(controllerContext, bindingContext);
+    }
     protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, System.ComponentModel.PropertyDescriptor propertyDescriptor)
     {
-      //make sure this is actually a property that can be set (don't want to provide a back door to overposting)
-      var prop = bindingContext.ModelType.GetProperty(propertyDescriptor.DisplayName, BindingFlags.Public | BindingFlags.Instance);
-      if (prop == null || prop.CanWrite == false)
-        throw new InvalidOperationException($"Property '{propertyDescriptor.DisplayName}' cannot be written to.");
 
 
-      var oi = ObjectInstance.GetObjectInstance(bindingContext.Model, false);
+      var oi = ObjectInstance.GetObjectInstance(bindingContext.Model);
       //if this isn't a BOV backed property...
       if(oi.ObjectDefinition.Properties.ContainsKey(propertyDescriptor.DisplayName) == false)
         //...then use the default binder
@@ -31,6 +39,16 @@ namespace Principle4.DryLogic.MVC
       //BOV binder
       else
       {
+				//make sure this is actually a property that can be set (don't want to provide a back door to overposting)
+				//update 5/26/2016: Should I be checking that the form collection even contained a value for this property first?
+        var modelType = bindingContext.ModelType;
+        if (modelType.IsAbstract)
+          modelType = bindingContext.Model.GetType();
+
+				var prop = modelType.GetProperty(propertyDescriptor.DisplayName, BindingFlags.Public | BindingFlags.Instance);
+				if (prop == null || prop.CanWrite == false)
+					throw new InvalidOperationException($"Property '{propertyDescriptor.DisplayName}' cannot be written to.");
+
         //base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
         
         var request = controllerContext.HttpContext.Request;

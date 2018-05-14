@@ -5,9 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Principle4.DryLogic.Demos.Web
+namespace Principle4.DryLogic.MVC
 {
-  public class BOVClientDataTypeModelValidatorProvider : ClientDataTypeModelValidatorProvider
+  public class DryLogicClientDataTypeModelValidatorProvider : ClientDataTypeModelValidatorProvider
   {
     //needed to disable to regular ClientDataTypeModelValidatorProvider since it causes the -number and -date unobtrusive attributes to be emited,
     //but I didn't want to disable that for all properties, just bov properties

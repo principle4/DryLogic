@@ -62,15 +62,19 @@
     <Compile Include="ObjectInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IValidatable.cs" />
+    <Compile Include="Validation\IStaticErrorMessage.cs" />
+    <Compile Include="Validation\RangeRule.cs" />
+    <Compile Include="Validation\RegexRule.cs" />
     <Compile Include="Validation\ObjectRuleBuilder.cs" />
     <Compile Include="Validation\PropertyRule.cs" />
     <Compile Include="Validation\PropertyRuleBuilder.cs" />
+    <Compile Include="Validation\InvalidStringsRule.cs" />
+    <Compile Include="Validation\StringLengthRule.cs" />
     <Compile Include="Validation\RequiredRule.cs" />
     <Compile Include="Validation\RuleBuilder.cs" />
     <Compile Include="Validation\TypeConvertableRule.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="MVC\" />
     <Folder Include="_dev\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

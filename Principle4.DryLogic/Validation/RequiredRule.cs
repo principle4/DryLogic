@@ -11,8 +11,7 @@ namespace Principle4.DryLogic.Validation
     {
       base.Assertion = oi => !String.IsNullOrWhiteSpace(oi.GetUntypedValue(propertyDefinition).StringValue);
 
-      base.ErrorMessageGenerator = () => String.Format("'{0}' is required.", propertyDefinition.CurrentName);
+      base.ErrorMessageStaticGenerator = () => $"'{propertyDefinition.CurrentName}' is required.";
     }
-
-  }
+	}
 }

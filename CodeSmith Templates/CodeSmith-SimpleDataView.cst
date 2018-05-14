@@ -1,0 +1,193 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="false" Description="Generates a very simple business object." Src="CodeSmith-DryObject-BaseTemplate.cst.cs" Inherits="TemplateBase"%>
+<%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table that the object is based on." %>
+<%@ Property Name="ClassNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Namespace your class is in. Only used if SingleFileMode is true!" %>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Assembly Name="System.Data" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Linq" %>
+<%@ Map Name="SqlCSharp" Src="Sql-CSharp" Description="System to C# Type Map" %>
+<%@ Map Name="DbDataReader" Src="DbType-DataReaderMethod" Description="DbType to DataReader Method Map" %>
+<%@ Map Name="SqlNativeSqlDb" Src="SqlNativeType-SqlDbType" Description="SqlNativeType to SqlDbType Map" %>
+<%@ Map Name="DbTypeCSharp" Src="DbType-CSharp" Description="DbType to CSharp Map" %>
+
+<%@ Property Name="DBType" Type="DBTypeOption" Category="Options" Default="1" Description="Type of RDBMS to generate for" %>
+
+
+
+using <%=ClassNamespace%>.Core;
+using App = <%=ClassNamespace%>.Core.App;
+
+using Principle4.DryLogic;
+using Principle4.DryLogic.Validation;
+using Dapper;
+
+<% 
+var className = GetPascalCaseName(SourceTable.Name); 
+var npkCols = SourceTable.NonPrimaryKeyColumns;
+
+%>
+
+namespace <%=ClassNamespace%>
+{
+    [DryLogicObject]
+    public class <%=className  %> : LogicClassBase<<%= className %>>
+	{
+
+        static ObjectDefinition<<%= className %>> OD = new ObjectDefinition<<%= className %>>();
+            
+		public <%= className %>() : base(OD)
+		{
+		}
+        
+		public <%= GetPrimaryKeyType(SourceTable) %> Id{get; internal set;}
+		
+		<% for (int i = 0; i < npkCols.Count; i++) { 
+            var col = npkCols[i];
+            var propName =  GetPropertyName(col);
+        %>
+        #region <%= propName %>
+        public static readonly PropertyDefinition<<%= GetCSharpVariableType(col) %>> <%= propName %>Property
+          = OD.AddProperty(pi => pi.<%=propName%>, p =>
+          {
+            Assert.That(p)
+              .IsRequired()
+              .IsConvertable()
+              ;
+          });
+
+        public <%= GetCSharpVariableType(col) %> <%= propName %>
+        {
+          get { return OI.GetValue(<%= propName %>Property); }
+          set { OI.SetValue(<%= propName %>Property, value); }
+        }
+        #endregion
+		<% } %>
+
+
+
+        /// <summary>
+        /// Saves a new <%= className %> instance to the database and updates the <paramref name="Id"/> property with the saved instance's id.
+        /// </summary>
+        /// <param name="data"><%= className %> instance to add</param>
+        /// <returns>The original <%= className %></returns>
+		public static <%= className %> Add(<%= className %> data)
+		{
+                    
+            #region cmd - insert into <%= SourceTable.Name %>...
+            String sql =
+@"insert into <%= SourceTable.Name %>(<% WriteForEach(npkCols,@"
+    {0}",
+    ",",
+    (a) => new []{a.Name}
+);%> 
+)values(<% WriteForEach(npkCols,@"
+    {1}{0}",
+    ",",
+    (a) => new []{a.Name, PP}
+);%>
+)  <%= DBType==DBTypeOption.SqlServer? "output inserted.id" : "returning id into :id" %>
+";
+            #endregion
+
+            #region Parameters
+            var p = new DynamicParameters(new {
+            <% for (int i = 0; i < npkCols.Count; i++) {
+                var column = npkCols[i];%>
+                <%= column.Name %> = data.<%= GetPropertyName(column) + (IsOracleBool(column)?"?1:0":"") + (i<npkCols.Count-1?",":"")%>
+            <%}%> 
+            });
+            <%if(DBType == DBTypeOption.Oracle)%>
+            p.Add("id", dbType:DbType.<%=GetPrimaryKeyType(SourceTable)%>, direction: ParameterDirection.Output);
+            #endregion
+            
+            using(var conn = App.DataAccess.GetConnection())
+            {
+                conn.Open();
+                data.Id = conn.Query<<%= GetPrimaryKeyType(SourceTable) %>>(sql, param:p).Single();
+            }
+            return data;
+		}
+        
+        /// <summary>
+        /// Updates an existing <%= className %> instance to the database.
+        /// </summary>
+        /// <param name="data"><%= className %> instance to update</param>
+        /// <returns>The original <%= className %></returns>
+		public static <%= className %> Update(<%= className %> data)
+		{
+                    
+            #region cmd - update <%= SourceTable.Name %>...
+            String sql =
+@"update <%= SourceTable.Name %> set <% WriteForEach(npkCols,@"
+    {0}={1}{2}",
+    ",",
+    (a) => new []{a.Name, PP, a.Name}
+);%> 
+";
+            #endregion
+
+            #region Parameters
+            var p = new DynamicParameters(new {
+            <% for (int i = 0; i < npkCols.Count; i++) {
+                var column = npkCols[i];%>
+                <%= column.Name %> = data.<%= GetPropertyName(column) + (IsOracleBool(column)?"?1:0":"") + (i<npkCols.Count-1?",":"")%>
+            <%}%> 
+            });
+            #endregion
+            
+            using(var conn = App.DataAccess.GetConnection())
+            {
+                conn.Open();
+            }
+            return data;
+		}
+         
+        
+        
+        /// <summary>
+        /// Retrieves a <%= className %> instance
+        /// </summary>
+        /// <param name="id">Id of the <%= className %> to retrieve</param>
+        /// <returns>The <%= className %> with the given id.</returns>
+        public static <%= className %> Get(<%= GetPrimaryKeyType(SourceTable) %> id)
+        {
+            #region sql - select * from <%= SourceTable.Name %>...
+            String sql = 
+@"select 
+<%--Select Columns--%>
+<% for (int i = 0; i < npkCols.Count; i++) { %>
+    <%= npkCols[i].Name %> as <%=GetPascalCaseName(npkCols[i].Name) + (i<npkCols.Count-1?",":"")%>
+<% } %>
+from <%= SourceTable.Name %>
+Where <%= SourceTable.PrimaryKey.MemberColumns[0].Name %> = <%= PP + SourceTable.PrimaryKey.MemberColumns[0].Name %>";
+            #endregion
+      
+            using(var conn = App.DataAccess.GetConnection())
+            {
+                return conn.Query<<%= className %>>(sql, param:new {<%= SourceTable.PrimaryKey.MemberColumns[0].Name %> = id}).Single();
+            }
+    	}
+    }
+}
+
+<script runat="template">
+    public String className;
+        
+    protected override void OnPreRender()
+    {
+
+        className = GetPascalCaseName(SourceTable.Name);
+    }
+            
+    public override string GetFileName() 
+    {
+        return GetPascalCaseName(SourceTable.Name) + ".cs";
+    }  
+    
+    
+    public string GetCSharpVariableType(ColumnSchema column) {
+        return base.GetCSharpVariableType(DbTypeCSharp, column);
+    }
+    
+</script>

@@ -9,7 +9,11 @@ namespace Principle4.DryLogic
 {
   public class ObjectInstance : INotifyPropertyChanged, IDataErrorInfo
   {
-    public static ObjectInstance GetObjectInstance(Object obj, Boolean throwException)
+    public static ObjectInstance GetObjectInstance(Object obj)
+    {
+      return GetObjectInstance(obj, false);
+    }
+    internal static ObjectInstance GetObjectInstance(Object obj, Boolean throwException)
     {
       var objectType = obj.GetType();
       CheckIsBOVObject(objectType, throwException);
@@ -39,13 +43,19 @@ namespace Principle4.DryLogic
     //It might make more sense to move this to object definition.  Not sure.
     public static Boolean CheckIsBOVObject(Type type, Boolean throwException)
     {
-      var defined = Attribute.IsDefined(type, typeof(DryLogicObjectAttribute));
-      if(throwException && !defined)
+      if (type == null)
       {
-        throw new DryLogicException("The given object/type is not marked as a BOVObject.  Did you forget to mark the class with a [BOVObject] attribute?");
+        return false;
       }
-      return defined;
-
+      else
+      {
+        var defined = Attribute.IsDefined(type, typeof(DryLogicObjectAttribute));
+        if (throwException && !defined)
+        {
+          throw new DryLogicException("The given object/type is not marked as a BOVObject.  Did you forget to mark the class with a [BOVObject] attribute?");
+        }
+        return defined;
+      }
     }
 
     public ObjectDefinition ObjectDefinition { get; private set; }
@@ -87,12 +97,15 @@ namespace Principle4.DryLogic
       propertyDefinition.GetPropertyValue(this).TypedValue = value;
     }
 
-    public Boolean Validate()
-    {
-      List<RuleViolation> ruleViolations;
-      return Validate(out ruleViolations);
-    }
-    public Boolean Validate(out List<RuleViolation> ruleViolations)
+		public Boolean Validate()
+		{
+			return ObjectDefinition.Validate(this);
+		}
+		public Boolean ValidateProperties()
+		{
+			return ObjectDefinition.ValidateProperties(this);
+		}
+		public Boolean Validate(out List<RuleViolation> ruleViolations)
     {
       return ObjectDefinition.Validate(this, out ruleViolations);
     }
@@ -130,7 +143,7 @@ namespace Principle4.DryLogic
       get {
         //might be worth adding a short circuit into isvalid (although I don't think that "Error" is commonly used over the indexer)
         List<RuleViolation> ruleViolations;
-        if (!Validate(out ruleViolations))
+        if (!Validate(out ruleViolations) && ruleViolations.Any())
         {
           return ruleViolations.First().ErrorMessage;
         }

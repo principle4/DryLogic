@@ -1,0 +1,61 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="true" Description="Generates a very simple business object." Src="CodeSmith-DryObject-BaseTemplate.cst.cs" Inherits="TemplateBase" %>
+<%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table that the object is based on." %>
+<%@ Property Name="ClassNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Namespace your class is in. Only used if SingleFileMode is true!" %>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Assembly Name="System.Data" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Linq" %>
+<%@ Map Name="SqlCSharp" Src="Sql-CSharp" Description="System to C# Type Map" %>
+<%@ Map Name="DbDataReader" Src="DbType-DataReaderMethod" Description="DbType to DataReader Method Map" %>
+<%@ Map Name="SqlNativeSqlDb" Src="SqlNativeType-SqlDbType" Description="SqlNativeType to SqlDbType Map" %>
+<%@ Map Name="DbTypeCSharp" Src="DbType-CSharp" Description="DbType to CSharp Map" %>
+
+<%@ Property Name="DBType" Type="DBTypeOption" Category="Options" Default="1" Description="Type of RDBMS to generate for" %>
+<% 
+%>
+
+namespace <%=ClassNamespace%>.Tests
+{
+  [TestClass]
+  public class <%= className %>Tests
+  {
+    [TestMethod]
+    public void AddGet()
+    {
+      <%= GetPascalCaseName(SourceTable.Name) %>.Add(GetSample());
+    }
+
+    public static InventoryError GetSample()
+    {
+      return new <%= GetPascalCaseName(SourceTable.Name) %>()
+      {
+		<% for (int i = 0; i < SourceTable.NonPrimaryKeyColumns.Count; i++) { 
+        var col = SourceTable.NonPrimaryKeyColumns[i];
+        %>
+        <%= GetPropertyName(col) + " = " + GetCSharpVariableType(col) + (i<SourceTable.NonPrimaryKeyColumns.Count-1?",":"")%>
+        <%}; %>
+      }
+    }
+  }
+}
+<script runat="template">
+    public String className;
+        
+    protected override void OnPreRender()
+    {
+
+        className = GetPascalCaseName(SourceTable.Name);
+    }
+            
+    public override string GetFileName() 
+    {
+        return GetPascalCaseName(SourceTable.Name) + "Tests.cs";
+    }   
+    
+    public string GetCSharpVariableType(ColumnSchema column) {
+        return base.GetCSharpVariableType(DbTypeCSharp, column);
+    }
+    
+
+</script>

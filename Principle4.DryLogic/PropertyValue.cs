@@ -164,8 +164,8 @@ namespace Principle4.DryLogic
     {
       get 
       {
-        return true;
-        //TODO:ParentProperty.GetFirstInvalidRule(this);
+				RuleViolation violation;
+				return this.Definition.Validate(this.ParentInstance, out violation);
       }
     }
 

@@ -94,7 +94,7 @@ namespace Principle4.DryLogic
     {
       get
       {
-        return AppliedRule.ErrorMessageGenerator();
+        return AppliedRule.ErrorMessageInstanceGenerator(InvalidObject);
       }
     }
  
