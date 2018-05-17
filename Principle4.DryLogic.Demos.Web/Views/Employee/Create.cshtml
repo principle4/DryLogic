@@ -25,13 +25,28 @@
     @Html.EditorFor(model => model.MyEmployee.TerminationDate)
     @Html.EditorFor(model => model.MyEmployee.BirthDate)
     @Html.EditorFor(model => model.MyEmployee.IsPresident)
+    @Html.TextBoxFor(model => model.MyEmployee.Score)
+    @Html.DropDownListFor(
+      model => model.MyEmployee.Score,
+        new SelectList(
+          new List<Object>
+            {
+              new { value = 0 , text = "Red"  },
+              new { value = 1 , text = "Blue" },
+              new { value = 2 , text = "Green"}
+            },
+            "value",
+            "text",
+            Model.MyEmployee.Score
+            )
+           )
 
-    <div class="form-group">
-      <div class="col-md-offset-2 col-md-10">
-        <input type="submit" value="Create" class="btn btn-default" />
+      <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+          <input type="submit" value="Create" class="btn btn-default" />
+        </div>
       </div>
-    </div>
-  </div>
+</div>
 }
 
 <div>
