@@ -29,10 +29,13 @@
 
     @* I know this is weird, but the model state reload for a drop down list is kinda dumb...it changes depending on where the options exist:
         https://stackoverflow.com/questions/37213368/metadata-vs-viewdata-in-htmlhelper
+
+        and for more problems on drop down list:
+        https://stackoverflow.com/questions/2278056/dropdownlistfor-not-selecting-value
     *@
     @{ ViewData[Html.NameFor(model => model.MyEmployee.Score).ToString()] = Model.ScoreOptions;}
     @Html.DropDownListFor(
-              model => model.MyEmployee.Score, null, new object());
+                  model => model.MyEmployee.Score, null, new object());
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="Create" class="btn btn-default" />
