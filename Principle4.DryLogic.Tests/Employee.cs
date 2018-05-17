@@ -165,6 +165,24 @@ namespace Principle4.DryLogic.Tests
 
     #endregion
 
+    #region Score
+    internal static readonly PropertyDefinition<int> ScoreProperty
+    = OD.Properties.Add<int>("Score", "What's your score?", p =>
+    {
+      Assert.That(p)
+        .IsRequired();
+    });
+
+    public int Score
+    {
+      get { return OI.GetValue(ScoreProperty); }
+      set { OI.SetValue(ScoreProperty, value); }
+    }
+
+    #endregion
+
+
+
 
     public string Error
     {

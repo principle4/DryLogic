@@ -60,6 +60,15 @@ namespace Principle4.DryLogic.Tests
     }
 
     [Test]
+    public void NeedsAScore()
+    {
+      Employee.MakeValidForPresident();
+      var violatedRule = Employee.ScoreProperty.GetFirstRuleViolation(Employee.OI);
+      Assert.That(Employee.Score ==  null);
+
+    }
+
+    [Test]
     public void PropertyChanged()
     {
       Boolean oiChanged = false;
