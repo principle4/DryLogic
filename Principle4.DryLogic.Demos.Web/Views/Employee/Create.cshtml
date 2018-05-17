@@ -12,7 +12,7 @@
 {
   @Html.AntiForgeryToken()
 
-  <div class="form-horizontal">
+<div class="form-horizontal">
     <hr />
     @Html.ValidationSummary(true)
 
@@ -26,26 +26,18 @@
     @Html.EditorFor(model => model.MyEmployee.BirthDate)
     @Html.EditorFor(model => model.MyEmployee.IsPresident)
     @Html.TextBoxFor(model => model.MyEmployee.Score)
-    @Html.DropDownListFor(
-      model => model.MyEmployee.Score,
-        new SelectList(
-          new List<Object>
-            {
-              new { value = 0 , text = "Red"  },
-              new { value = 1 , text = "Blue" },
-              new { value = 2 , text = "Green"}
-            },
-            "value",
-            "text",
-            Model.MyEmployee.Score
-            )
-           )
 
-      <div class="form-group">
+    @* I know this is weird, but the model state reload for a drop down list is kinda dumb...it changes depending on where the options exist:
+        https://stackoverflow.com/questions/37213368/metadata-vs-viewdata-in-htmlhelper
+    *@
+    @{ ViewData[Html.NameFor(model => model.MyEmployee.Score).ToString()] = Model.ScoreOptions;}
+    @Html.DropDownListFor(
+              model => model.MyEmployee.Score, null, new object());
+    <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-          <input type="submit" value="Create" class="btn btn-default" />
+            <input type="submit" value="Create" class="btn btn-default" />
         </div>
-      </div>
+    </div>
 </div>
 }
 
