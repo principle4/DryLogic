@@ -131,7 +131,7 @@ namespace Principle4.DryLogic
       this.typedValue = value;
       TypedValueIsAvailable = true;
       if (setString)
-        StringValue = value.ToString();
+        StringValue = value?.ToString(); //could be null in the case of a string
     }
 
     private void UnsetTypedValue()
