@@ -15,8 +15,11 @@ namespace Principle4.DryLogic
     }
     internal static ObjectInstance GetObjectInstance(Object obj, Boolean throwException)
     {
+        if (obj == null)
+            throw new ArgumentNullException("obj");
+
       var objectType = obj.GetType();
-      CheckIsBOVObject(objectType, throwException);
+      CheckIsDryObject(objectType, throwException);
       var bovAttrib = (DryLogicObjectAttribute)objectType.GetCustomAttributes(typeof(DryLogicObjectAttribute),true)[0];
 
 
@@ -25,23 +28,23 @@ namespace Principle4.DryLogic
       {
         if (throwException)
         {
-          throw new DryLogicException($"Property '{bovAttrib.InstancePropertyName}' as specified by the BOVObjectAttribute could not be found on type '{objectType}'.");
+          throw new DryLogicException($"Property '{bovAttrib.InstancePropertyName}' as specified by the DryLogicObject attribute could not be found on type '{objectType}'.");
         }
         return null;
       }
       return (ObjectInstance)prop.GetValue(obj, null);
     }
-    public static Boolean IsBOVObject(Object obj)
+    public static Boolean IsDryObject(Object obj)
     {
-      return IsBOVObject(obj.GetType());
+      return IsDryObject(obj.GetType());
     }
-    public static Boolean IsBOVObject(Type type)
+    public static Boolean IsDryObject(Type type)
     {
-      return CheckIsBOVObject(type, false);
+      return CheckIsDryObject(type, false);
     }
 
     //It might make more sense to move this to object definition.  Not sure.
-    public static Boolean CheckIsBOVObject(Type type, Boolean throwException)
+    public static Boolean CheckIsDryObject(Type type, Boolean throwException)
     {
       if (type == null)
       {
@@ -52,7 +55,7 @@ namespace Principle4.DryLogic
         var defined = Attribute.IsDefined(type, typeof(DryLogicObjectAttribute));
         if (throwException && !defined)
         {
-          throw new DryLogicException("The given object/type is not marked as a BOVObject.  Did you forget to mark the class with a [BOVObject] attribute?");
+          throw new DryLogicException("The given object/type is not marked as a DryLogicObject.  Did you forget to mark the class with a [DryLogicObject] attribute?");
         }
         return defined;
       }

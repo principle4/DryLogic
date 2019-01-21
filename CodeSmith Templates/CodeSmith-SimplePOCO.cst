@@ -1,0 +1,110 @@
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="false" Description="Generates a very simple business object." Src="CodeSmith-DryObject-BaseTemplate.cst.cs" Inherits="TemplateBase"%>
+<%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table that the object is based on." %>
+<%@ Property Name="ClassNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Namespace your class is in. Only used if SingleFileMode is true!" %>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Assembly Name="System.Data" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Linq" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+<%@ Map Name="SqlCSharp" Src="Sql-CSharp" Description="System to C# Type Map" %>
+<%@ Map Name="DbDataReader" Src="DbType-DataReaderMethod" Description="DbType to DataReader Method Map" %>
+<%@ Map Name="SqlNativeSqlDb" Src="SqlNativeType-SqlDbType" Description="SqlNativeType to SqlDbType Map" %>
+<%@ Map Name="DbTypeCSharp" Src="DbType-CSharp" Description="DbType to CSharp Map" %>
+
+<%@ Property Name="DBType" Type="DBTypeOption" Category="Options" Default="1" Description="Type of RDBMS to generate for" %>
+<script runat="template">
+
+    public String className;
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+        DbTypeMapCSharp = DbTypeCSharp;
+	}
+    protected override void OnPreRender()
+    {
+
+        className = GetPascalCaseName(SourceTable.Name) + "Summary";
+    }
+
+    public override List<PropertyDefinition> RegularProperties
+    {
+        get
+        {
+            var originalList=base.RegularProperties;
+            originalList.RemoveAll(p => p.Name=="ClientOId");
+            return originalList;
+        }
+    }
+    public override List<ColumnSchema> InsertableColumns
+    {
+        get
+        {
+            var originalList=base.InsertableColumns;
+            originalList.RemoveAll(c => c.Name=="ClientOId");
+            return originalList;
+        }
+    }       
+    
+    public override string GetFileName() 
+    {
+        return GetPascalCaseName(SourceTable.Name) + "SummaryView.cs";
+    }  
+    
+    
+//    public string GetCSharpVariableType(ColumnSchema column) {
+//        return base.GetCSharpVariableType(DbTypeCSharp, column);
+//    }
+    
+</script>
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using <%=ClassNamespace%>.Core;
+using App = <%=ClassNamespace%>.Core.App;
+using Dapper;
+
+<% 
+var npkCols = this.SourceTable.NonPrimaryKeyColumns;
+%>
+
+namespace <%=ClassNamespace%>
+{
+    public class <%=className  %>
+	{
+        <% foreach(var prop in RegularProperties) { %>
+        public <%= prop.Type %> <%= prop.Name %>{ get; private set;}
+		<% } %>
+
+        
+        /// <summary>
+        /// Retrieves a <%= className %> list
+        /// </summary>
+        public static List<<%= className %>> GetList()
+        {
+            #region sql - select * from <%= SourceTable.Name %>...
+            String sql = 
+@"select 
+<%--Select Columns--%><% foreach(var colName in InsertableColumns.Select(c => c.Name).WithTrailingComma()){%>
+    <%= colName %>
+<% } %>
+from <%= SourceTable.Name %>
+Where ClientOId = @ClientOId and 
+";     
+            #endregion
+            #region Parameters
+            var p = new DynamicParameters(new {
+                ClientOId = App.SecurityContext.ClientOId
+            });
+            #endregion
+            
+            using(var conn = App.DataAccess.GetConnection())
+            {
+                return conn.Query<<%= className %>>(sql, param:p).ToList();
+            }
+    	}
+    }
+}
+

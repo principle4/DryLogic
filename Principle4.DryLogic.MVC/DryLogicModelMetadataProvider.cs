@@ -14,7 +14,7 @@ namespace Principle4.DryLogic.MVC
       //containerTYpe is null for simple types
       if(
         containerType != null 
-        && ObjectInstance.IsBOVObject(containerType)
+        && ObjectInstance.IsDryObject(containerType)
         && ObjectDefinition.GetObjectDefinition(containerType, true).Properties.ContainsKey(propertyName)
         )
       {

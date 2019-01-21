@@ -34,12 +34,21 @@ namespace Principle4.DryLogic.Tests
     {
       OI = OD.CreateInstance(this);
       IsPresident = false;
+
+            OI.PropertyChanged += OI_PropertyChanged;
+    }
+    private void OI_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if(e.PropertyName == nameof(this.HireDate))
+        {
+            //do your secondary drop down update here
+        }
     }
 
 
 
-    #region HireDate
-    public static readonly PropertyDefinition<DateTime> HireDateProperty
+        #region HireDate
+        public static readonly PropertyDefinition<DateTime> HireDateProperty
       = OD.AddProperty(pi => pi.HireDate, p =>
       {
         Assert.That(p)
@@ -55,6 +64,8 @@ namespace Principle4.DryLogic.Tests
       set { OI.SetValue(HireDateProperty, value); }
     }
     #endregion
+
+
 
     #region BirthDate
     public static readonly PropertyDefinition<DateTime> BirthDateProperty

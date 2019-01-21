@@ -32,13 +32,27 @@ namespace Principle4.DryLogic
 				initializer
 				);
 		}
-	}
+
+        //not sure if this should be here...oi already has validate methods that point back to the object definition...redundant
+        public Boolean Validate(T dryObject)
+        {
+            var oi = ObjectInstance.GetObjectInstance(dryObject);
+            return this.Validate(oi);
+        }
+
+        public Boolean Validate(T dryObject, out List<RuleViolation> ruleViolations)
+        {
+            var oi = ObjectInstance.GetObjectInstance(dryObject);
+            return this.Validate(oi, out ruleViolations);
+
+        }
+    }
 
 	public abstract class ObjectDefinition : IValidatable 
   {
     public static ObjectDefinition GetObjectDefinition(Type objectType, Boolean throwException)
     {
-      if (ObjectInstance.CheckIsBOVObject(objectType, throwException) == false)
+      if (ObjectInstance.CheckIsDryObject(objectType, throwException) == false)
         return null;
       
       var bovAttrib = (DryLogicObjectAttribute)objectType.GetCustomAttributes(typeof(DryLogicObjectAttribute), true)[0];

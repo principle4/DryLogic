@@ -6,6 +6,7 @@
 <%@ Import Namespace="SchemaExplorer" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Linq" %>
+<%@ Import Namespace="System.Collections.Generic" %>
 <%@ Map Name="SqlCSharp" Src="Sql-CSharp" Description="System to C# Type Map" %>
 <%@ Map Name="DbDataReader" Src="DbType-DataReaderMethod" Description="DbType to DataReader Method Map" %>
 <%@ Map Name="SqlNativeSqlDb" Src="SqlNativeType-SqlDbType" Description="SqlNativeType to SqlDbType Map" %>
@@ -14,38 +15,91 @@
 <%@ Property Name="DBType" Type="DBTypeOption" Category="Options" Default="1" Description="Type of RDBMS to generate for" %>
 <% 
 %>
+using System;
+using NUnit.Framework;
 
 namespace <%=ClassNamespace%>.Tests
 {
-  [TestClass]
-  public class <%= className %>Tests
+  [TestFixture]
+  public class <%= className %>Tests : TestBase
   {
-    [TestMethod]
+    [Test]
     public void AddGet()
     {
-      <%= GetPascalCaseName(SourceTable.Name) %>.Add(GetSample());
+        var <%=instanceName%> = GetSample();
+        var <%=instanceName%>2 = <%=className%>.Get(<%=instanceName%>.OId);
+        Assert.AreNotEqual(<%=instanceName%>2.OId, 0);
+        Assert.AreEqual(<%=instanceName%>.OId, <%=instanceName%>2.OId);
+    }
+    
+
+    [Test]
+    public void Update()
+    {
+        var <%=instanceName%> = AddSample();
+
+        <% foreach(var prop in RegularProperties.Select(p => $"{instanceName}.{p.Name} = {instanceName}.{p.Name} + ;")){ %>
+        <%= prop %> 
+        <% } %>
+        
+        <%=className%>.Update(<%=instanceName %>);
+        
+        var <%=instanceName%>2 = <%=className%>.Get(<%=instanceName%>.OId);
+
+        <% foreach(var prop in RegularProperties.Select(p => $"Assert.AreEqual({instanceName}.{p.Name}, {instanceName}2.{p.Name}, nameof({instanceName}2.{p.Name}) + \" should have been updated.\");")){ %>
+        <%= prop %> 
+        <% } %>
+
     }
 
-    public static InventoryError GetSample()
+    [Test]
+    public void Delete()
     {
-      return new <%= GetPascalCaseName(SourceTable.Name) %>()
+        var <%=instanceName%>1 = GetSample();
+        var <%=instanceName%>2 = <%=className%>.Get(<%=instanceName%>1.OId);
+        <%=className%>.Delete(<%=instanceName%>1.OId);
+        try
+        {
+            <%=className%>.Get(<%=instanceName%>1.OId);
+            Assert.Fail("Should fail when the <%=className%> has been deleted.");
+        }
+        catch(InvalidOperationException)
+        {
+            Assert.Pass();
+        }
+    }
+
+    
+    public static <%= className %> GetSample(Boolean shouldAdd=true)
+    {
+      var sample = new <%= className %>
       {
-		<% for (int i = 0; i < SourceTable.NonPrimaryKeyColumns.Count; i++) { 
-        var col = SourceTable.NonPrimaryKeyColumns[i];
-        %>
-        <%= GetPropertyName(col) + " = " + GetCSharpVariableType(col) + (i<SourceTable.NonPrimaryKeyColumns.Count-1?",":"")%>
-        <%}; %>
-      }
+        <% foreach(var prop in RegularProperties.Select(p => $"{p.Name} = default({p.Type})").WithTrailingComma()){ %>
+            <%= prop %> 
+        <% } %>
+
+        if (shouldAdd)
+            <%= className %>.Add(sample);
+        return sample;
+      };
     }
   }
 }
 <script runat="template">
     public String className;
+    public String instanceName;
+    protected override void OnInit()
+    {
+        base.OnInit();
+        DbTypeMapCSharp = DbTypeCSharp;
+	}
         
     protected override void OnPreRender()
     {
 
         className = GetPascalCaseName(SourceTable.Name);
+        instanceName = GetCamelCaseName(className);
+        
     }
             
     public override string GetFileName() 
@@ -56,6 +110,17 @@ namespace <%=ClassNamespace%>.Tests
     public string GetCSharpVariableType(ColumnSchema column) {
         return base.GetCSharpVariableType(DbTypeCSharp, column);
     }
+
+    public override List<PropertyDefinition> RegularProperties
+    {
+        get
+        {
+            var originalList=base.RegularProperties;
+            originalList.RemoveAll(p => p.Name=="ClientOId" || p.Name=="OId");
+            return originalList;
+        }
+    }
+    
     
 
 </script>

@@ -1,10 +1,66 @@
 ﻿using System;
+using System.Linq;
 using System.Data;
 using System.ComponentModel;
 using CodeSmith.Engine;
 using SchemaExplorer;
 using System.Collections.Generic;
 
+public class PropertyDefinition{
+    public String Name { get; set; }
+    public String Type { get; set; }
+    public Boolean IsRequired { get; set;}
+}
+
+public static class Extensions
+{
+    public static IEnumerable<String> WithLeadingComma(this IEnumerable<String> stringEnumerator)
+    {
+        return WithLeading(stringEnumerator,",");
+    }    
+    public static IEnumerable<String> WithLeading(this IEnumerable<String> stringEnumerator, String separator)
+    {
+        using (var enumerator = stringEnumerator.GetEnumerator())
+        {
+            if (!enumerator.MoveNext())
+                throw new InvalidOperationException("Property collection contained no elements");
+
+            String first = enumerator.Current;
+            do
+            {
+                yield return (enumerator.Current.Equals(first)?"":separator) + enumerator.Current;
+            }
+            while (enumerator.MoveNext());
+        }
+    }    
+    
+    
+    
+    public static IEnumerable<String> WithTrailingComma(this IEnumerable<String> stringEnumerator)
+    {
+        return WithTrailing(stringEnumerator,",");
+    }
+    
+    public static IEnumerable<String> WithTrailing(this IEnumerable<String> stringEnumerator, String separator)
+    {
+        using (var enumerator = stringEnumerator.GetEnumerator())
+        {
+            if (!enumerator.MoveNext())
+                throw new InvalidOperationException("Property collection contained no elements");
+            
+            var hasMore = false;
+            do
+            {
+                var currentValue = enumerator.Current;
+                hasMore = enumerator.MoveNext();
+                yield return currentValue + (hasMore?separator:"");
+            }
+            while (hasMore);
+        }
+    }    
+
+    
+}
 
 public class TemplateBase : CodeTemplate
 {
@@ -14,6 +70,8 @@ public class TemplateBase : CodeTemplate
         SqlServer=1,
         Oracle=2
     }
+    
+    public MapCollection DbTypeMapCSharp {get; set;}
     
     private SchemaExplorer.TableSchema SourceTable {
         get
@@ -27,7 +85,6 @@ public class TemplateBase : CodeTemplate
         {
             return (DBTypeOption) GetProperty("DBType");
         }
-        
     }
 
     protected String PP="";
@@ -67,7 +124,7 @@ public class TemplateBase : CodeTemplate
 
     protected override void OnInit()
     {
-        if(DBType == DBTypeOption.SqlServer)
+        if(DBType != DBTypeOption.SqlServer)
             PP="@";
         else
             PP=":";
@@ -108,6 +165,10 @@ public class TemplateBase : CodeTemplate
 
     //only for delimited names (oracle)
     public string GetPascalCaseName(string value) {
+        if(DBType == DBTypeOption.SqlServer)
+            return value;
+
+        
         value = value.ToLower();
 
         var parts = value.Split('_');
@@ -124,14 +185,99 @@ public class TemplateBase : CodeTemplate
 //
 //        return memberVariableName;
 //    }
+    
+    //public Func<List<ColumnSchema>> PrivateSetterPropertySelector {get; set;} = () => SourceTable.PrimaryKey.MemberColumns.ToList();
+        //all columns set by an identity
+        //not sure if this will work with oracle
+        //= () => SourceTable.Columns.Where((c) => (bool)c.ExtendedProperties["CS_IsIdentity"].Value).ToList();
+    
+    public virtual List<PropertyDefinition> PrivateSetterProperties{
+        get{
+            //return SourceTable.PrimaryKey.MemberColumns.Select(
+            //    c => new PropertyDefinition(){Name=GetPropertyName(c), Type=GetCSharpVariableType(c)}).ToList();
+            return IdentityValueColumns
+                .Select(c => new PropertyDefinition() { Name = GetPropertyName(c), Type = c.SystemType.Name })
+                .ToList();
+            
+        }
+    }
+
+    public virtual List<MemberColumnSchema> PrimaryKeyColumns
+    {
+        get
+        {
+            return SourceTable.PrimaryKey.MemberColumns.ToList();
+        }
+    }    
+    
+    public virtual List<ColumnSchema> NonKeyColumns
+    {
+        get
+        {
+            return SourceTable.NonPrimaryKeyColumns.ToList();
+        }
+    }
+    
+    public virtual List<PropertyDefinition> RegularProperties
+    {
+        get
+        {
+            return SourceTable.Columns.ToArray()
+                .Select(c => new PropertyDefinition() { Name = GetPropertyName(c), Type = c.SystemType.Name, IsRequired = !c.AllowDBNull })
+                //where it's not already a private setter col
+                .Where(p => PrivateSetterProperties.Any(ps => ps.Name == p.Name) == false)
+                .ToList();
+        }
+    }
+    
+    public virtual List<PropertyDefinition> ParameterValueProperties
+    {
+        get
+        {
+            return RegularProperties;
+        }
+    }
+
+    public virtual List<ColumnSchema> IdentityValueColumns
+    {
+        get
+        {
+            //all columns set by an identity
+            //not sure if this will work with oracle
+            return SourceTable.Columns
+                .Where((c) => (bool)c.ExtendedProperties["CS_IsIdentity"].Value)
+                .ToList();
+        }
+    }
+    public virtual List<ColumnSchema> ReturnedValueColumns
+    {
+        get
+        {
+            return IdentityValueColumns;
+        }
+    }
+    public virtual List<ColumnSchema> InsertableColumns
+    {
+        get
+        {
+            return SourceTable.Columns
+                .Where( c=> IdentityValueColumns.Contains(c) == false)
+                .ToList();
+        }
+    }
+    
+    
+//    public virtual Func<PropertyDefinition,String> ParameterValueOverrideProvider {get {return p => null;} }
+    
+//    public virtual Func<ColumnSchema,String> InsertValueOverrideProvider {get { return c => null;}}
+
 
     public string GetPropertyName(ColumnSchema column) {
         string propertyName = column.Name;
-        //for oracle
         propertyName = GetPascalCaseName(propertyName);
 
-        if (propertyName == column.Table.Name + "Name") return "Name";
-        if (propertyName == column.Table.Name + "Description") return "Description";
+//        if (propertyName == column.Table.Name + "Name") return "Name";
+//        if (propertyName == column.Table.Name + "Description") return "Description";
 
         //decided against this - too many type codes are NOT enums
 //        if (propertyName.EndsWith("TypeCode")) propertyName = propertyName.Substring(0, propertyName.Length - 4);
@@ -181,13 +327,14 @@ public class TemplateBase : CodeTemplate
 
     public string GetPrimaryKeyType(TableSchema table) {
         if (table.PrimaryKey != null) {
-            if (table.PrimaryKey.MemberColumns.Count == 1) {
-                //return GetCSharpVariableType(table.PrimaryKey.MemberColumns[0]);
-                return table.PrimaryKey.MemberColumns[0].SystemType.Name;
-            }
-            else {
-                throw new ApplicationException("This template will not work on primary keys with more than one member column.");
-            }
+            return table.PrimaryKey.MemberColumns[0].SystemType.Name;
+//            if (table.PrimaryKey.MemberColumns.Count == 1) {
+//                //return GetCSharpVariableType(table.PrimaryKey.MemberColumns[0]);
+//                return table.PrimaryKey.MemberColumns[0].SystemType.Name;
+//            }
+//            else {
+//                throw new ApplicationException("This template will not work on primary keys with more than one member column.");
+//            }
         }
         else {
             throw new ApplicationException("This template will only work on tables with a primary key.");
@@ -198,6 +345,10 @@ public class TemplateBase : CodeTemplate
         return this.GetClassName(this.SourceTable) + ".cs";
         //var sourceTable = (SchemaExplorer.TableSchema)GetProperty("DbSourceTable");
         //return this.GetClassName(sourceTable) + ".cs";
+    }
+    
+    public string GetCSharpVariableType(ColumnSchema column) {
+        return GetCSharpVariableType(DbTypeMapCSharp, column);
     }
     
     public string GetCSharpVariableType(MapCollection dbyTypeCSharp, ColumnSchema column) {

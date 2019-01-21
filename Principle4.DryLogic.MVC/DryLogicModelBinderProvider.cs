@@ -10,7 +10,7 @@ namespace Principle4.DryLogic.MVC
   {
     public IModelBinder GetBinder(Type modelType)
     {
-      if (ObjectInstance.IsBOVObject(modelType))
+      if (ObjectInstance.IsDryObject(modelType))
         return new DryLogicModelBinder();
 
 
