@@ -28,7 +28,7 @@
         className = GetPascalCaseName(SourceTable.Name) + "Summary";
     }
 
-    public override List<PropertyDefinition> RegularProperties
+    protected override List<PropertyDefinition> RegularProperties
     {
         get
         {
@@ -37,7 +37,7 @@
             return originalList;
         }
     }
-    public override List<ColumnSchema> InsertableColumns
+    protected override List<ColumnSchema> InsertableColumns
     {
         get
         {

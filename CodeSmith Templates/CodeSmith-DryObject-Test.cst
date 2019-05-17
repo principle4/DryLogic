@@ -107,11 +107,8 @@ namespace <%=ClassNamespace%>.Tests
         return GetPascalCaseName(SourceTable.Name) + "Tests.cs";
     }   
     
-    public string GetCSharpVariableType(ColumnSchema column) {
-        return base.GetCSharpVariableType(DbTypeCSharp, column);
-    }
 
-    public override List<PropertyDefinition> RegularProperties
+    protected override List<PropertyDefinition> RegularProperties
     {
         get
         {

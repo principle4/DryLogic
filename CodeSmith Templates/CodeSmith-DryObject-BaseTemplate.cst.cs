@@ -124,6 +124,8 @@ public class TemplateBase : CodeTemplate
 
     protected override void OnInit()
     {
+        //System.Diagnostics.Debugger.Launch();
+        //System.Diagnostics.Debugger.Break();
         if(DBType != DBTypeOption.SqlServer)
             PP="@";
         else
@@ -191,7 +193,7 @@ public class TemplateBase : CodeTemplate
         //not sure if this will work with oracle
         //= () => SourceTable.Columns.Where((c) => (bool)c.ExtendedProperties["CS_IsIdentity"].Value).ToList();
     
-    public virtual List<PropertyDefinition> PrivateSetterProperties{
+    protected virtual List<PropertyDefinition> PrivateSetterProperties{
         get{
             //return SourceTable.PrimaryKey.MemberColumns.Select(
             //    c => new PropertyDefinition(){Name=GetPropertyName(c), Type=GetCSharpVariableType(c)}).ToList();
@@ -202,27 +204,27 @@ public class TemplateBase : CodeTemplate
         }
     }
 
-    public virtual List<MemberColumnSchema> PrimaryKeyColumns
+    protected virtual List<MemberColumnSchema> PrimaryKeyColumns
     {
         get
         {
-            return SourceTable.PrimaryKey.MemberColumns.ToList();
+            return SourceTable?.PrimaryKey.MemberColumns.ToList();
         }
     }    
     
-    public virtual List<ColumnSchema> NonKeyColumns
+    protected virtual List<ColumnSchema> NonKeyColumns
     {
         get
         {
-            return SourceTable.NonPrimaryKeyColumns.ToList();
+            return SourceTable?.NonPrimaryKeyColumns.ToList();
         }
     }
     
-    public virtual List<PropertyDefinition> RegularProperties
+    protected virtual List<PropertyDefinition> RegularProperties
     {
         get
         {
-            return SourceTable.Columns.ToArray()
+            return SourceTable?.Columns.ToArray()
                 .Select(c => new PropertyDefinition() { Name = GetPropertyName(c), Type = c.SystemType.Name, IsRequired = !c.AllowDBNull })
                 //where it's not already a private setter col
                 .Where(p => PrivateSetterProperties.Any(ps => ps.Name == p.Name) == false)
@@ -230,7 +232,7 @@ public class TemplateBase : CodeTemplate
         }
     }
     
-    public virtual List<PropertyDefinition> ParameterValueProperties
+    protected virtual List<PropertyDefinition> ParameterValueProperties
     {
         get
         {
@@ -238,29 +240,29 @@ public class TemplateBase : CodeTemplate
         }
     }
 
-    public virtual List<ColumnSchema> IdentityValueColumns
+    protected virtual List<ColumnSchema> IdentityValueColumns
     {
         get
         {
             //all columns set by an identity
             //not sure if this will work with oracle
-            return SourceTable.Columns
+            return SourceTable?.Columns
                 .Where((c) => (bool)c.ExtendedProperties["CS_IsIdentity"].Value)
                 .ToList();
         }
     }
-    public virtual List<ColumnSchema> ReturnedValueColumns
+    protected virtual List<ColumnSchema> ReturnedValueColumns
     {
         get
         {
             return IdentityValueColumns;
         }
     }
-    public virtual List<ColumnSchema> InsertableColumns
+    protected virtual List<ColumnSchema> InsertableColumns
     {
         get
         {
-            return SourceTable.Columns
+            return SourceTable?.Columns
                 .Where( c=> IdentityValueColumns.Contains(c) == false)
                 .ToList();
         }

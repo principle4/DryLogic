@@ -2,13 +2,12 @@
 @using Principle4.DryLogic.Validation;
 @model PropertyValue
 @{
-
-  if (Model.ValueType == typeof(Boolean))
-  {
-    @Html.Partial("EditorTemplates/PropertyValue_Boolean", Model);
-  }
-  else
-  {
-    @Html.Partial("EditorTemplates/PropertyValue_Default", Model);
-  }
+	if (Model.ValueType == typeof(Boolean))
+	{
+		@Html.Partial("EditorTemplates/PropertyValue_Boolean", Model);
+	}
+	else
+	{
+		@Html.Partial("EditorTemplates/PropertyValue_Default", Model);
+	}
 }

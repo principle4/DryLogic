@@ -1,4 +1,4 @@
-﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="false" Description="Generates a very simple business object." Src="CodeSmith-DryObject-BaseTemplate.cst.cs" Inherits="TemplateBase"%>
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="true" Description="Generates a very simple business object." Src="CodeSmith-DryObject-BaseTemplate.cst.cs" Inherits="TemplateBase"%>
 <%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table that the object is based on." %>
 <%@ Property Name="ClassNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Namespace your class is in. Only used if SingleFileMode is true!" %>
 <%@ Assembly Name="SchemaExplorer" %>
@@ -17,7 +17,7 @@
 
     public String className;
 
-     public override List<PropertyDefinition> PrivateSetterProperties{
+     protected override List<PropertyDefinition> PrivateSetterProperties{
         get{
             //return SourceTable.PrimaryKey.MemberColumns.Select(
             //    c => new PropertyDefinition(){Name=GetPropertyName(c), Type=GetCSharpVariableType(c)}).ToList();
@@ -27,7 +27,7 @@
             
         }
     }
-    public override List<ColumnSchema> InsertableColumns
+    protected override List<ColumnSchema> InsertableColumns
     {
         get
         {
@@ -36,7 +36,7 @@
             return originalList;
         }
     }    
-    public override List<PropertyDefinition> RegularProperties
+    protected override List<PropertyDefinition> RegularProperties
     {
         get
         {
@@ -123,7 +123,7 @@ namespace <%=ClassNamespace%>
         
         
         <%foreach(var kp in this.PrivateSetterProperties){%>
-        public <%= $"{kp.Type} {kp.Name}" %>{get; internal set;}
+        public <%= $"{kp.Type} {kp.Name}" %>{get; set;}
         <%} %>
 		
         <% foreach(var prop in RegularProperties) { %>
@@ -287,7 +287,7 @@ Where <% foreach(var clause in PrimaryKeyColumns.Select(c => $"{c.Name}={PP}{c.N
            
             using(var conn = App.DataAccess.GetConnection())
             {
-                var oId = conn.Query<<%= GetPrimaryKeyType(SourceTable) %>>(sql, param:p).SingleOrNotFound();
+                conn.Query<<%= GetPrimaryKeyType(SourceTable) %>>(sql, param:p).SingleOrNotFound();
             }
 		}
          

@@ -164,8 +164,8 @@ namespace Principle4.DryLogic
     {
       get 
       {
-				RuleViolation violation;
-				return this.Definition.Validate(this.ParentInstance, out violation);
+			RuleViolation violation;
+			return this.Definition.Validate(this.ParentInstance, out violation);
       }
     }
 

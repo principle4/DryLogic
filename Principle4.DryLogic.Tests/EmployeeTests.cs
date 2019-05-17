@@ -30,8 +30,18 @@ namespace Principle4.DryLogic.Tests
             Assert.AreEqual("Roy", Employee.MiddleName, "Field should be set.");
         }
 
+		[Test]
+		public void GetSetBooleanByProxy()
+		{
+			Employee.MakeValidForPresident();
 
-        [Test]
+			EmployeeProxy.IsPresident = "False";
+
+			Assert.IsFalse(Employee.IsPresident, "Value should be false.");
+		}
+
+
+		[Test]
         public void GetSetValue()
         {
             Employee.HireDate = DateTime.Today;
@@ -43,10 +53,18 @@ namespace Principle4.DryLogic.Tests
         {
             var violatedRule = Employee.HireDateProperty.GetFirstRuleViolation(Employee.OI);
             Assert.That(violatedRule.AppliedRule is DBV.RequiredRule, "Employee should not be valid since hire date is required.");
-
-
         }
-        [Test]
+
+		[Test]
+		public void SalaryIsOptionalNullable()
+		{
+			var violatedRule = Employee.SalaryProperty.GetFirstRuleViolation(Employee.OI);
+			Assert.That(violatedRule == null, "Salary is not required, null allowed.");
+
+			Assert.IsNull(Employee.Salary);
+		}
+
+		[Test]
         public void HireDateShouldBeAValidDate()
         {
             EmployeeProxy.HireDate = "asdf";
@@ -56,7 +74,6 @@ namespace Principle4.DryLogic.Tests
             EmployeeProxy.HireDate = "13/13/2013";
             violatedRule = Employee.HireDateProperty.GetFirstRuleViolation(Employee.OI);
             Assert.That(violatedRule.AppliedRule is DBV.TypeConvertableRule, "Employee should not be valid since hire date cannot be converted to an datetime.");
-
         }
 
         [Test]
@@ -68,7 +85,8 @@ namespace Principle4.DryLogic.Tests
 
         }
 
-        [Test]
+		[Test]
+
         public void PropertyChanged()
         {
             Boolean oiChanged = false;

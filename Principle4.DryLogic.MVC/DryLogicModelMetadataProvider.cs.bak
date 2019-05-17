@@ -37,7 +37,7 @@ namespace Principle4.DryLogic.MVC
               //loop thru the parts in the middle
               for (int i = 1; i < expressionParts.Length - 1; i++)
               {
-								//added by ben for VT (currently not handling when object is array of dry logic types)
+								//added by ben for VT
                                 if (container.GetType().IsGenericType && container.GetType().GetGenericTypeDefinition() == typeof(List<>))
                                 {
                                     return base.CreateMetadata(attributes, containerType, modelAccessor, modelType, propertyName);
