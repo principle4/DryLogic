@@ -1,6 +1,7 @@
 ﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="true" Description="Generates a very simple business object." Src="CodeSmith-DryObject-BaseTemplate.cst.cs" Inherits="TemplateBase"%>
 <%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table that the object is based on." %>
-<%@ Property Name="ClassNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Namespace your class is in. Only used if SingleFileMode is true!" %>
+<%@ Property Name="ClassNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Full namespace your class is in. Only used if SingleFileMode is true!" %>
+<%@ Property Name="RootNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Full namespace for use for other usings" %>
 <%@ Assembly Name="SchemaExplorer" %>
 <%@ Assembly Name="System.Data" %>
 <%@ Import Namespace="SchemaExplorer" %>
@@ -33,6 +34,15 @@
         {
             var originalList=base.InsertableColumns;
             originalList.RemoveAll(c => c.Name=="OId");
+            return originalList;
+        }
+    }      
+    protected override List<ColumnSchema> SelectableColumns
+    {
+        get
+        {
+            var originalList=base.SelectableColumns;
+            originalList.RemoveAll(c => c.Name=="ClientOId");
             return originalList;
         }
     }    
@@ -71,7 +81,7 @@
     
 </script>
 using Principle4.DryLogic;
-namespace <%=ClassNamespace%>
+namespace <%=RootNamespace%>
 {
     public abstract class LogicClassBase<T>
     {
@@ -96,13 +106,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using <%=ClassNamespace%>.Core;
-using App = <%=ClassNamespace%>.Core.App;
+using <%=RootNamespace%>.Core;
+using App = <%=RootNamespace%>.Core.App;
 using Principle4.DryLogic;
 using Principle4.DryLogic.Validation;
 using Dapper;
 using SafeDapper;
 using System.Transactions;
+using VivaTools.UtilityExtensions;
 
 <% 
 var className = GetPascalCaseName(SourceTable.Name); 
@@ -222,8 +233,8 @@ values(
 exec Object_AuditEdit @oId, @clientOId, @modifiedByOId
 
 update <%= SourceTable.Name %> set <% foreach(var colUpdate in NonKeyColumns.Select(c => $"{c.Name}={PP}{c.Name}").WithTrailingComma()){%>
-    <%= colUpdate %><%}%> 
-output <%= PP + SourceTable.PrimaryKey.MemberColumns[0].Name %> as <%= SourceTable.PrimaryKey.MemberColumns[0].Name %>
+    <%= colUpdate %><%}%>
+output @OId as OId <%--<%= PP + SourceTable.PrimaryKey.MemberColumns[0].Name %> as <%= SourceTable.PrimaryKey.MemberColumns[0].Name %>--%>
 from <%= SourceTable.Name %>
 Where <% foreach(var clause in PrimaryKeyColumns.Select(c => $"{c.Name}={PP}{c.Name}").WithLeading("and ")){%>
     <%= clause %><%}%> 
@@ -246,7 +257,7 @@ Where <% foreach(var clause in PrimaryKeyColumns.Select(c => $"{c.Name}={PP}{c.N
            
             using(var conn = App.DataAccess.GetConnection())
             {
-                data.OId = conn.Query<<%= GetPrimaryKeyType(SourceTable) %>>(sql, param:p).SingleOrNotFound();
+                conn.Query<<%= GetPrimaryKeyType(SourceTable) %>>(sql, param:p).SingleOrNotFound();
             }
             return data;
 		}
@@ -291,7 +302,18 @@ Where <% foreach(var clause in PrimaryKeyColumns.Select(c => $"{c.Name}={PP}{c.N
             }
 		}
          
-        
+        const string baseSql = 
+        #region select...
+@"select 
+<%--Select Columns--%>
+    <% foreach(var colName in SelectableColumns.Select(c => c.Name).WithTrailingComma()){%>
+    <%= colName%>
+    <% } %>
+from <%= SourceTable.Name %>
+Where <% foreach(var clause in PrimaryKeyColumns.Select(c => $"{c.Name}={PP}{c.Name}").WithLeading("and ")){%>
+    <%= clause %><%}%> 
+";     
+        #endregion
         
         /// <summary>
         /// Retrieves a <%= className %> instance
@@ -301,14 +323,8 @@ Where <% foreach(var clause in PrimaryKeyColumns.Select(c => $"{c.Name}={PP}{c.N
         public static <%= className %> Get(<%= GetPrimaryKeyType(SourceTable) %> oId)
         {
             #region sql - select * from <%= SourceTable.Name %>...
-            String sql = 
-@"select 
-<%--Select Columns--%>
-    OId,<% foreach(var colName in InsertableColumns.Select(c => c.Name).WithTrailingComma()){%>
-    <%= colName %><% } %>
-from <%= SourceTable.Name %>
-Where <% foreach(var clause in PrimaryKeyColumns.Select(c => $"{c.Name}={PP}{c.Name}").WithLeading("and ")){%>
-    <%= clause %><%}%> 
+            String sql = Iql.PrependMethodSignature(baseSql, nameof(<%=className%>), nameof(Get)) +
+@"--additional where clause
 ";     
             #endregion
             #region Parameters

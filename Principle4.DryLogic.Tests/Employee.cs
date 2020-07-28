@@ -166,8 +166,15 @@ namespace Principle4.DryLogic.Tests
 			.When(oi => BirthDateProperty[oi].AddYears(40) >= DateTime.Today)
 			.WithMessage("{0} cannot be true if the employee is not yet 40")
 			.IdentifiedBy("PRES40");
-		});
+			//New idea:  I've started TypedPropertyRuleBuilder<T>
+			//OD.Assert.That(p) //OD knows the object type, so we could conceivably have a typed assert function rather than passing around oi
+			//	.IsAdhearingTo( emp => emp.BirthDate.AddYears(40) >= DateTime.Today)
+			//		.DependingOn(emp => emp.BirthDate) //this would indicate that BirthDate needs to be valid before we can continue with this rule.  
+			//										//That might be extractible from IsAdhearingTo, but that might be a lot of expression parsing.
+			//										//And maybe this isn't really necessary...it might be a better idea to "remember" that rule parsing failed
+			//										//and then try the other properties first, throwing an error for the original problem only if a "better" violation could not be found
 
+		});
 		public Boolean IsPresident
 		{
 			get { return OI.GetValue(IsPresidentProperty); }

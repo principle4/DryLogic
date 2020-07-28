@@ -15,13 +15,14 @@ namespace Principle4.DryLogic.Validation
 
       base.Assertion = oi =>
       {
-        var stringValue = oi.GetUntypedValue(propertyDefinition).StringValue;
-        if (stringValue == null)
+        var propVal = oi.GetUntypedValue(propertyDefinition);
+
+        if (!propVal.HasAnyValue)
         {
           return true;
         }
 
-        return new Regex(pattern, RegexOptions.IgnoreCase).IsMatch(stringValue);
+        return new Regex(pattern, RegexOptions.IgnoreCase).IsMatch(propVal.StringValue);
       };
 
       base.ErrorMessageStaticGenerator = () => $"'{propertyDefinition.CurrentName}' must match the pattern {Pattern}.";

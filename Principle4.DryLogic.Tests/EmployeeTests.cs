@@ -40,6 +40,16 @@ namespace Principle4.DryLogic.Tests
 			Assert.IsFalse(Employee.IsPresident, "Value should be false.");
 		}
 
+		[Test]
+		public void CheckInvalidFieldForValue()
+		{
+			Utility.TryGetValue(Employee, e => e.IsPresident);
+
+
+			Assert.IsFalse(Employee.IsPresident, "Value should be false.");
+		}
+
+
 
 		[Test]
         public void GetSetValue()

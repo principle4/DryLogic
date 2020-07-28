@@ -173,6 +173,12 @@ Where <%= SourceTable.PrimaryKey.MemberColumns[0].Name %> = <%= PP + SourceTable
 
 <script runat="template">
     public String className;
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+        DbTypeMapCSharp = DbTypeCSharp;
+	}
         
     protected override void OnPreRender()
     {

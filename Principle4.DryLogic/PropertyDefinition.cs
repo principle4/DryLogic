@@ -103,8 +103,16 @@ namespace Principle4.DryLogic
 
     internal PropertyValue<T> GetPropertyValue(ObjectInstance oi)
     {
-      return (PropertyValue<T>)oi.PropertyValues[this.SystemName];
-    }
+			try
+			{
+				return (PropertyValue<T>)oi.PropertyValues[this.SystemName];
+			}
+			catch(Exception ex)
+			{
+				throw new InvalidOperationException($"An error occured retrieving value for property {this.SystemName}",ex);
+			}
+
+	}
 
     //created this so the GetValue wasn't so verbose in the rules
     public T this[ObjectInstance oi]

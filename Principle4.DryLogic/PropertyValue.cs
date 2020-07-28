@@ -43,6 +43,10 @@ namespace Principle4.DryLogic
         }
       }
     }
+	public Boolean HasAnyValue
+	{
+		get => !String.IsNullOrEmpty(StringValue);
+	}
     public abstract string FormattedValue{get;}
 
 

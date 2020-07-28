@@ -51,6 +51,7 @@ namespace Principle4.DryLogic
         //if the condition is dependent on another field which is also invalid, it will fail.
         catch(Exception ex)
         {
+		  //update - this is incomplete: We should find a way to save that this happened, let the rest of the validation continue, but then check to see if this condition exists an throw a real error
           if(Debugger.IsAttached)
           {
             Debug.WriteLine("Rule '{0}' not applied - condition invalid with exception:");
@@ -71,6 +72,7 @@ namespace Principle4.DryLogic
         // (does a rule need some sort of flag indicating that it can be evaluated immediately or only after all immediate rules?)
         //update: it's not just conditions as rules that check other property values would also be affected
         //for now just catch the exceptions and or maybe return a special rule violation
+		//update: see comments above on CheckCondition and also review comments on new typed OD.Assert in Tests.Employee.IsPresident
         if (!CheckRuleIsValid(rule, oi, out ruleViolation))
         {
           return ruleViolation;

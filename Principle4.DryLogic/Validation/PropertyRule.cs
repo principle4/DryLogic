@@ -12,6 +12,8 @@ namespace Principle4.DryLogic.Validation
       Property = propertyDefinition;
     }
 
+	public Boolean ForceEmitClientSide { get; set; }
+
 
     public PropertyDefinition Property { get; private set; }
   }

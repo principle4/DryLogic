@@ -29,7 +29,14 @@ namespace Principle4.DryLogic
 
 		}
 
+
 		public Func<String> ErrorMessageStaticGenerator { get; set; }
+
+		/// <summary>
+		/// An instance generator trumps a static generator, but it also means that client side rendering won't work 
+		///   since instance generators needs the full state of the object
+		/// </summary>
+		public Func<String> EffectiveErrorMessageStaticGenerator { get => errorMessageInstanceGenerator == null ? ErrorMessageStaticGenerator : null; }
 
 
 

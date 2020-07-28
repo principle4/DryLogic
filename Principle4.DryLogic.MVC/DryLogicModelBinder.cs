@@ -29,16 +29,23 @@ namespace Principle4.DryLogic.MVC
 		protected override void BindProperty(ControllerContext controllerContext, ModelBindingContext bindingContext, System.ComponentModel.PropertyDescriptor propertyDescriptor)
 		{
 
-
 			var oi = ObjectInstance.GetObjectInstance(bindingContext.Model);
 			//if this isn't a BOV backed property...
 			if (oi.ObjectDefinition.Properties.ContainsKey(propertyDescriptor.DisplayName) == false)
 				//...then use the default binder
 				base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
 
-			//BOV binder
+			//DryLogic binder
 			else
 			{
+				//from https://github.com/mono/aspnetwebstack/blob/master/src/System.Web.Mvc/DefaultModelBinder.cs
+				string fullPropertyKey = CreateSubPropertyName(bindingContext.ModelName, propertyDescriptor.Name);
+				if (!bindingContext.ValueProvider.ContainsPrefix(fullPropertyKey))
+				{
+					return;
+				}
+
+
 				//make sure this is actually a property that can be set (don't want to provide a back door to overposting)
 				//update 5/26/2016: Should I be checking that the form collection even contained a value for this property first?
 				var modelType = bindingContext.ModelType;
@@ -51,20 +58,29 @@ namespace Principle4.DryLogic.MVC
 
 				//base.BindProperty(controllerContext, bindingContext, propertyDescriptor);
 
-				var request = controllerContext.HttpContext.Request;
-				string prefix = bindingContext.ModelName;
-				if (!String.IsNullOrEmpty(prefix))
-					prefix += ".";
+				//string prefix = bindingContext.ModelName;
+				//if (!String.IsNullOrEmpty(prefix))
+				//	prefix += ".";
 
-				if (oi.PropertyValues[propertyDescriptor.DisplayName].ValueType == typeof(Boolean))
+
+				if (oi.PropertyValues[propertyDescriptor.DisplayName].ValueType == typeof(Boolean)
+					//adding a check...appearently a single radio button does NOT render the true,false pair
+					//while this isn't really a valid senario for an interface, we also don't want to create a red herring
+					//that said, the PAIR or yes/no radio buttons really represents the state that better matches the DryLogic pattern
+					// ie if you use CheckBoxFor, DryLogic will balk if the field hasn't already been set, since a check box by default represents false
+					// however, a pair of yes/no truly will require active (vs passive) input from the user and in that case
+					// it makes sense that a boolean can be marked as required.
+					)
 				{
 					//mvc renders checkboxes with an extra hidden tag so that an unchecked input still returns a value.
 					//  unfortunately this also means that a checked value returns the value of both so it comes back as "true,false"
-					oi.PropertyValues[propertyDescriptor.DisplayName].Value = !(request.Form[prefix + propertyDescriptor.DisplayName].ToLower() == "false");
+					//oi.PropertyValues[propertyDescriptor.DisplayName].Value = !(request.Form[prefix + propertyDescriptor.DisplayName].ToLower() == "false");
+					oi.PropertyValues[propertyDescriptor.DisplayName].Value = !(bindingContext.ValueProvider.GetValue(fullPropertyKey).AttemptedValue.ToLower() == "false");
 				}
 				else
 				{
-					oi.PropertyValues[propertyDescriptor.DisplayName].StringValue = request.Form[prefix + propertyDescriptor.DisplayName];
+					//oi.PropertyValues[propertyDescriptor.DisplayName].StringValue = request.Form[prefix + propertyDescriptor.DisplayName];
+					oi.PropertyValues[propertyDescriptor.DisplayName].StringValue = bindingContext.ValueProvider.GetValue(fullPropertyKey).AttemptedValue;
 				}
 			}
 		}
@@ -74,7 +90,7 @@ namespace Principle4.DryLogic.MVC
 		{
 			var obj = base.BindModel(controllerContext, bindingContext);
 			//if this is a BOV backed object...
-			if (Attribute.IsDefined(bindingContext.ModelType, typeof(DryLogicObjectAttribute)))
+			if (obj !=null &&Attribute.IsDefined(bindingContext.ModelType, typeof(DryLogicObjectAttribute)))
 			{
 				//...then get the violated rules add add them to the modelstate
 				var oi = ObjectInstance.GetObjectInstance(obj, true);

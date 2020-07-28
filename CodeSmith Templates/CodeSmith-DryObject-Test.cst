@@ -1,6 +1,7 @@
-﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="true" Description="Generates a very simple business object." Src="CodeSmith-DryObject-BaseTemplate.cst.cs" Inherits="TemplateBase" %>
+﻿<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="true"  Description="Generates a very simple business object." Src="CodeSmith-DryObject-BaseTemplate.cst.cs" Inherits="TemplateBase" %>
 <%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table that the object is based on." %>
-<%@ Property Name="ClassNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Namespace your class is in. Only used if SingleFileMode is true!" %>
+<%@ Property Name="ClassNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Full namespace your class is in. Only used if SingleFileMode is true!" %>
+<%@ Property Name="RootNamespace" Type="System.String" Category="Options" Default="BusinessObjects" Description="Full namespace for use for other usings" %>
 <%@ Assembly Name="SchemaExplorer" %>
 <%@ Assembly Name="System.Data" %>
 <%@ Import Namespace="SchemaExplorer" %>
@@ -17,6 +18,8 @@
 %>
 using System;
 using NUnit.Framework;
+using <%=RootNamespace%>;
+using <%=RootNamespace%>.Tests;
 
 namespace <%=ClassNamespace%>.Tests
 {
@@ -36,9 +39,10 @@ namespace <%=ClassNamespace%>.Tests
     [Test]
     public void Update()
     {
-        var <%=instanceName%> = AddSample();
+        var <%=instanceName%> = GetSample();
+        var <%=instanceName%>New = GetSample(false);
 
-        <% foreach(var prop in RegularProperties.Select(p => $"{instanceName}.{p.Name} = {instanceName}.{p.Name} + ;")){ %>
+        <% foreach(var prop in RegularProperties.Select(p => $"{instanceName}.{p.Name} = {instanceName}New.{p.Name};")){ %>
         <%= prop %> 
         <% } %>
         
@@ -78,10 +82,11 @@ namespace <%=ClassNamespace%>.Tests
             <%= prop %> 
         <% } %>
 
-        if (shouldAdd)
-            <%= className %>.Add(sample);
-        return sample;
       };
+    
+    if (shouldAdd)
+        <%= className %>.Add(sample);
+    return sample;
     }
   }
 }

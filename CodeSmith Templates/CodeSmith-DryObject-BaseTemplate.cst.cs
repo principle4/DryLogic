@@ -225,7 +225,7 @@ public class TemplateBase : CodeTemplate
         get
         {
             return SourceTable?.Columns.ToArray()
-                .Select(c => new PropertyDefinition() { Name = GetPropertyName(c), Type = c.SystemType.Name, IsRequired = !c.AllowDBNull })
+                .Select(c => new PropertyDefinition() { Name = GetPropertyName(c), Type = c.SystemType.Name + (c.AllowDBNull?"?":""), IsRequired = !c.AllowDBNull })
                 //where it's not already a private setter col
                 .Where(p => PrivateSetterProperties.Any(ps => ps.Name == p.Name) == false)
                 .ToList();
@@ -267,6 +267,15 @@ public class TemplateBase : CodeTemplate
                 .ToList();
         }
     }
+    protected virtual List<ColumnSchema> SelectableColumns
+    {
+        get
+        {
+            return SourceTable?.Columns
+                .ToList();
+        }
+    }
+    	
     
     
 //    public virtual Func<PropertyDefinition,String> ParameterValueOverrideProvider {get {return p => null;} }

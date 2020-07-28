@@ -26,8 +26,9 @@ namespace Principle4.DryLogic.MVC
       var propDef = od.Properties[Metadata.PropertyName];
       foreach (Rule rule in propDef.Rules)
       {
-				if (rule.ErrorMessageStaticGenerator != null)
+				if (rule.EffectiveErrorMessageStaticGenerator != null && (rule.Condition == null || (rule as PropertyRule)?.ForceEmitClientSide == true))
 				{
+					//
 					if (rule is RequiredRule)
 						yield return new ModelClientValidationRequiredRule(rule.ErrorMessageStaticGenerator());
 					else if (rule is StringLengthRule)
