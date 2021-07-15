@@ -163,7 +163,7 @@ namespace Principle4.DryLogic.Tests
 		  .IsRequired()
 		  .IsConvertable()
 		  .IsAdhearingTo(oi => oi.GetValue(IsPresidentProperty) == false)
-			.When(oi => BirthDateProperty[oi].AddYears(40) >= DateTime.Today)
+			.When(oi => BirthDateProperty[oi].AddYears(40) > DateTime.Today)
 			.WithMessage("{0} cannot be true if the employee is not yet 40")
 			.IdentifiedBy("PRES40");
 			//New idea:  I've started TypedPropertyRuleBuilder<T>
@@ -254,13 +254,14 @@ namespace Principle4.DryLogic.Tests
 			HireDate = DateTime.Today;
 			BirthDate = DateTime.Today.AddYears(-25);
 			LastName = "Levitt";
+			FirstName = "Brandon";
+			Score = 0;
 		}
 		public void MakeValidForPresident()
 		{
 			MakeValid();
 			BirthDate = DateTime.Today.AddYears(-40);
 			IsPresident = true;
-
 		}
 
 

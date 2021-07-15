@@ -86,15 +86,6 @@ namespace Principle4.DryLogic.Tests
             Assert.That(violatedRule.AppliedRule is DBV.TypeConvertableRule, "Employee should not be valid since hire date cannot be converted to an datetime.");
         }
 
-        [Test]
-        public void NeedsAScore()
-        {
-            Employee.MakeValidForPresident();
-            var violatedRule = Employee.ScoreProperty.GetFirstRuleViolation(Employee.OI);
-            Assert.That(Employee.Score == null);
-
-        }
-
 		[Test]
 
         public void PropertyChanged()
@@ -125,13 +116,13 @@ namespace Principle4.DryLogic.Tests
         [Test]
         public void TestConditionalRule_IsPresident()
         {
-            Employee.MakeValid();
-            Assert.That(Employee.OI.Validate(), "Employee should be valid.");
-            Employee.BirthDate.AddDays(-1);
+            Employee.MakeValidForPresident();
+            Assert.That(Employee.OI.Validate(), "Employee should be valid." + (Employee.OI.GetRuleViolations().FirstOrDefault()?.ErrorMessage));
+            Employee.BirthDate = Employee.BirthDate.AddDays(1);
 
             var violatedRule = Employee.IsPresidentProperty.GetFirstRuleViolation(Employee.OI);
             //TODO: Need rule ID setter so we can identify the proper rule.
-            Assert.That(violatedRule.AppliedRule.Id == "PRES40", "Employee should have violated the PRES40 rule.");
+            Assert.That(violatedRule?.AppliedRule.Id == "PRES40", "Employee should have violated the PRES40 rule.");
 
 
 
